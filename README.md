@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Phison 2027 Website IA Prototype
 
-## Getting Started
+An internal information architecture prototype for reviewing Phison's proposed 2027 top navigation and subnavigation structure. This is **not** an official production design.
 
-First, run the development server:
+## Quick Start
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## Deploy to Vercel
 
-To learn more about Next.js, take a look at the following resources:
+1. Push this repository to GitHub (or connect your local project).
+2. Import the project at [vercel.com/new](https://vercel.com/new).
+3. Vercel auto-detects Next.js — no extra configuration required.
+4. Deploy. All pages are statically generated.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Alternatively, using the Vercel CLI:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npx vercel
+```
 
-## Deploy on Vercel
+## Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+app/
+  layout.tsx              # Root layout with header, footer, noindex metadata
+  page.tsx                # Home page
+  product-finder/         # Mock Product Finder
+  contact-sales/          # Mock Contact Sales
+  [section]/              # Section landing pages (solutions, resources, etc.)
+  [section]/[slug]/       # Individual subnav mock pages
+components/
+  Header.tsx              # Sticky top nav with mega menus
+  MegaMenu.tsx            # Desktop mega menu panel
+  Footer.tsx              # Site footer
+  Hero.tsx                # Hero, breadcrumb, CTA band
+  CardGrid.tsx            # Card grid components
+  PageTemplate.tsx        # Standard mock page template
+  ProductFinderMock.tsx   # Product Finder with filters
+data/
+  nav.ts                  # Navigation hierarchy (edit to update IA)
+  pages.ts                # Home content and mock product data
+public/
+  Phison-SVG.svg          # Official Phison logo (used in header & footer)
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Replacing Logo & Assets
+
+The header and footer use `/Phison-SVG.svg`. To swap the logo, replace that file or update the `src` in `components/Header.tsx` and `components/Footer.tsx`:
+
+```tsx
+<Image
+  src="/Phison-SVG.svg"
+  alt="PHISON"
+  width={146}
+  height={28}
+  ...
+/>
+```
+
+## Navigation Data
+
+All navigation structure lives in `data/nav.ts`. Edit this file to add, remove, or reorganize menu items. Each item needs a `label`, `href`, and `description`. Section landing pages and sub-pages are generated automatically from this data.
+
+## Internal Prototype Notice
+
+- A discreet banner reads: "2027 Website IA Prototype — Internal Review Only"
+- `robots` metadata is set to `noindex, nofollow`
+- All page copy is representative placeholder content for navigation validation
+
+## Tech Stack
+
+- Next.js (App Router)
+- TypeScript
+- Tailwind CSS
+- Static generation only — no backend or database
