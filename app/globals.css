@@ -194,10 +194,30 @@ a:hover {
   inset: 0;
   opacity: 0;
   transition: opacity 0.5s ease;
+  pointer-events: none;
 }
 
 .hero-slide.active {
   opacity: 1;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+/* Live site: @keyframes fadeBottom — caption rises in on slide show */
+@keyframes fadeBottom {
+  from {
+    opacity: 0;
+    transform: translateY(10%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-slide.active .hero-caption-computex,
+.hero-slide.active .hero-caption-d206v {
+  animation: fadeBottom 0.7s ease-in-out 0.15s both;
 }
 
 .hero-dots {
@@ -338,12 +358,13 @@ a:hover {
   font-weight: 600;
   text-decoration: none;
   background: transparent;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .hero-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
+  background: #ffcc40;
+  border-color: #ffcc40;
+  color: #132951;
 }
 
 @media (max-width: 767px) {
@@ -654,7 +675,7 @@ a:hover {
   background-repeat: no-repeat;
   display: block;
   text-decoration: none;
-  transition: width 0.4s ease;
+  transition: width 0.4s ease, background-image 0.35s ease;
   flex-shrink: 0;
 }
 
@@ -961,6 +982,7 @@ a:hover {
   bottom: 0;
   height: 5px;
   background-color: transparent;
+  transition: background-color 0.4s ease;
 }
 
 .nav-link:hover,
@@ -1244,7 +1266,6 @@ a:hover {
   z-index: 50;
   background-color: #f2f2f2;
   border-top: 1px solid #e5e5e5;
-  animation: megaMenuIn 0.15s ease-out;
 }
 
 .live-mega-submenu {
@@ -1315,17 +1336,25 @@ a:hover {
   color: #f6921e !important;
 }
 
-@keyframes megaMenuIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Live site: g-dropdown-fade-in-up (hydrogen_142.css) */
+@keyframes g-dropdown-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 30px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
-.mega-menu-enter {
-  animation: megaMenuIn 0.15s ease-out;
+.mega-menu-enter,
+.live-mega {
+  animation: g-dropdown-fade-in-up 0.3s ease-out both;
 }
 
 .nav-overlay {
-  animation: overlayIn 0.12s ease-out;
+  animation: overlayIn 0.2s ease-out;
 }
 
 @keyframes overlayIn {
