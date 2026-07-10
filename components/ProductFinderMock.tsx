@@ -3,8 +3,9 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { mockProducts } from "@/data/pages";
+import { useNavVersion } from "./NavVersionProvider";
 
-const filterOptions = {
+const defaultFilterOptions = {
   productType: ["Enterprise SSD", "Controller", "Boot Drive SSD", "Industrial SSD", "Signal IC"],
   capacity: ["480 GB", "2 TB", "7.68 TB", "15.36 TB", "30.72 TB", "N/A"],
   interface: ["PCIe Gen5 x4", "PCIe Gen4 x4", "PCIe Gen3 x4", "SATA III", "PCIe Gen4"],
@@ -22,40 +23,93 @@ const filterOptions = {
   family: ["Pascari", "PS5027", "PS5031", "Industrial", "Signal IC", "aiDAPTIV"],
 };
 
-type Filters = Record<keyof typeof filterOptions, string>;
+/** Web Team WIP Product Finder filters */
+const wipFilterOptions = {
+  capacity: ["480 GB", "2 TB", "7.68 TB", "15.36 TB", "30.72 TB", "N/A"],
+  solution: [
+    "Enterprise AI",
+    "Cloud Storage",
+    "Gaming",
+    "Boot / OS Drive",
+    "Edge & Industrial",
+    "Signal Integrity",
+    "Automotive",
+    "HPC",
+  ],
+  sequential: [
+    "Up to 14,000 / 10,000 MB/s",
+    "Up to 7,400 / 7,000 MB/s",
+    "Up to 3,500 / 3,200 MB/s",
+  ],
+  random: [
+    "Up to 2,500K / 1,000K IOPS",
+    "Up to 1,500K / 800K IOPS",
+    "Up to 600K / 500K IOPS",
+  ],
+  formFactor: ["U.2", "M.2 2280", "E3.S", "Controller ASIC", "BGA"],
+};
 
-const emptyFilters = (): Filters =>
+type DefaultFilters = Record<keyof typeof defaultFilterOptions, string>;
+type WipFilters = Record<keyof typeof wipFilterOptions, string>;
+
+const emptyDefaultFilters = (): DefaultFilters =>
   Object.fromEntries(
-    Object.keys(filterOptions).map((k) => [k, ""])
-  ) as Filters;
+    Object.keys(defaultFilterOptions).map((k) => [k, ""])
+  ) as DefaultFilters;
+
+const emptyWipFilters = (): WipFilters =>
+  Object.fromEntries(
+    Object.keys(wipFilterOptions).map((k) => [k, ""])
+  ) as WipFilters;
 
 export default function ProductFinderMock() {
-  const [filters, setFilters] = useState<Filters>(emptyFilters);
+  const { versionId } = useNavVersion();
+  const isWip = versionId === "web-team-wip";
+
+  const [defaultFilters, setDefaultFilters] = useState<DefaultFilters>(emptyDefaultFilters);
+  const [wipFilters, setWipFilters] = useState<WipFilters>(emptyWipFilters);
 
   const filtered = useMemo(() => {
+    if (isWip) {
+      return mockProducts.filter((product) => {
+        if (wipFilters.capacity && product.capacity !== wipFilters.capacity) return false;
+        if (wipFilters.solution && product.solution !== wipFilters.solution) return false;
+        if (wipFilters.formFactor && product.formFactor !== wipFilters.formFactor) return false;
+        // Sequential / random are WIP filter UI; soft-match against product specs when possible
+        if (wipFilters.sequential) {
+          const seq = `${product.seqRead} / ${product.seqWrite}`;
+          if (!wipFilters.sequential.includes(product.seqRead) && !seq.includes(product.seqRead)) {
+            return false;
+          }
+        }
+        if (wipFilters.random) {
+          if (!wipFilters.random.includes(product.randRead)) return false;
+        }
+        return true;
+      });
+    }
+
     return mockProducts.filter((product) => {
-      if (filters.productType && product.type !== filters.productType) return false;
-      if (filters.capacity && product.capacity !== filters.capacity) return false;
-      if (filters.interface && product.interface !== filters.interface) return false;
-      if (filters.formFactor && product.formFactor !== filters.formFactor) return false;
-      if (filters.endurance && product.endurance !== filters.endurance) return false;
-      if (filters.temperature && product.temperature !== filters.temperature) return false;
-      if (filters.solution && product.solution !== filters.solution) return false;
-      if (filters.family && product.family !== filters.family) return false;
+      if (defaultFilters.productType && product.type !== defaultFilters.productType) return false;
+      if (defaultFilters.capacity && product.capacity !== defaultFilters.capacity) return false;
+      if (defaultFilters.interface && product.interface !== defaultFilters.interface) return false;
+      if (defaultFilters.formFactor && product.formFactor !== defaultFilters.formFactor) return false;
+      if (defaultFilters.endurance && product.endurance !== defaultFilters.endurance) return false;
+      if (defaultFilters.temperature && product.temperature !== defaultFilters.temperature) return false;
+      if (defaultFilters.solution && product.solution !== defaultFilters.solution) return false;
+      if (defaultFilters.family && product.family !== defaultFilters.family) return false;
       return true;
     });
-  }, [filters]);
+  }, [isWip, defaultFilters, wipFilters]);
 
-  const updateFilter = (key: keyof Filters, value: string) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
+  const clearFilters = () => {
+    if (isWip) setWipFilters(emptyWipFilters());
+    else setDefaultFilters(emptyDefaultFilters());
   };
-
-  const clearFilters = () => setFilters(emptyFilters());
 
   return (
     <div className="max-w-[1280px] mx-auto px-5 lg:px-8 py-12">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Filters sidebar */}
         <aside className="lg:col-span-1">
           <div className="bg-white border border-phison-border p-6 sticky top-32">
             <div className="flex items-center justify-between mb-6">
@@ -69,59 +123,95 @@ export default function ProductFinderMock() {
             </div>
 
             <div className="space-y-5">
-              <FilterSelect
-                label="Product Type"
-                value={filters.productType}
-                options={filterOptions.productType}
-                onChange={(v) => updateFilter("productType", v)}
-              />
-              <FilterSelect
-                label="Capacity"
-                value={filters.capacity}
-                options={filterOptions.capacity}
-                onChange={(v) => updateFilter("capacity", v)}
-              />
-              <FilterSelect
-                label="Interface"
-                value={filters.interface}
-                options={filterOptions.interface}
-                onChange={(v) => updateFilter("interface", v)}
-              />
-              <FilterSelect
-                label="Form Factor"
-                value={filters.formFactor}
-                options={filterOptions.formFactor}
-                onChange={(v) => updateFilter("formFactor", v)}
-              />
-              <FilterSelect
-                label="Endurance"
-                value={filters.endurance}
-                options={filterOptions.endurance}
-                onChange={(v) => updateFilter("endurance", v)}
-              />
-              <FilterSelect
-                label="Temperature Range"
-                value={filters.temperature}
-                options={filterOptions.temperature}
-                onChange={(v) => updateFilter("temperature", v)}
-              />
-              <FilterSelect
-                label="Target Solution"
-                value={filters.solution}
-                options={filterOptions.solution}
-                onChange={(v) => updateFilter("solution", v)}
-              />
-              <FilterSelect
-                label="Product Family"
-                value={filters.family}
-                options={filterOptions.family}
-                onChange={(v) => updateFilter("family", v)}
-              />
+              {isWip ? (
+                <>
+                  <FilterSelect
+                    label="Capacity"
+                    value={wipFilters.capacity}
+                    options={wipFilterOptions.capacity}
+                    onChange={(v) => setWipFilters((p) => ({ ...p, capacity: v }))}
+                  />
+                  <FilterSelect
+                    label="Solution"
+                    value={wipFilters.solution}
+                    options={wipFilterOptions.solution}
+                    onChange={(v) => setWipFilters((p) => ({ ...p, solution: v }))}
+                  />
+                  <FilterSelect
+                    label="Sequential read/write"
+                    value={wipFilters.sequential}
+                    options={wipFilterOptions.sequential}
+                    onChange={(v) => setWipFilters((p) => ({ ...p, sequential: v }))}
+                  />
+                  <FilterSelect
+                    label="Random read/write"
+                    value={wipFilters.random}
+                    options={wipFilterOptions.random}
+                    onChange={(v) => setWipFilters((p) => ({ ...p, random: v }))}
+                  />
+                  <FilterSelect
+                    label="Form factor"
+                    value={wipFilters.formFactor}
+                    options={wipFilterOptions.formFactor}
+                    onChange={(v) => setWipFilters((p) => ({ ...p, formFactor: v }))}
+                  />
+                </>
+              ) : (
+                <>
+                  <FilterSelect
+                    label="Product Type"
+                    value={defaultFilters.productType}
+                    options={defaultFilterOptions.productType}
+                    onChange={(v) => setDefaultFilters((p) => ({ ...p, productType: v }))}
+                  />
+                  <FilterSelect
+                    label="Capacity"
+                    value={defaultFilters.capacity}
+                    options={defaultFilterOptions.capacity}
+                    onChange={(v) => setDefaultFilters((p) => ({ ...p, capacity: v }))}
+                  />
+                  <FilterSelect
+                    label="Interface"
+                    value={defaultFilters.interface}
+                    options={defaultFilterOptions.interface}
+                    onChange={(v) => setDefaultFilters((p) => ({ ...p, interface: v }))}
+                  />
+                  <FilterSelect
+                    label="Form Factor"
+                    value={defaultFilters.formFactor}
+                    options={defaultFilterOptions.formFactor}
+                    onChange={(v) => setDefaultFilters((p) => ({ ...p, formFactor: v }))}
+                  />
+                  <FilterSelect
+                    label="Endurance"
+                    value={defaultFilters.endurance}
+                    options={defaultFilterOptions.endurance}
+                    onChange={(v) => setDefaultFilters((p) => ({ ...p, endurance: v }))}
+                  />
+                  <FilterSelect
+                    label="Temperature Range"
+                    value={defaultFilters.temperature}
+                    options={defaultFilterOptions.temperature}
+                    onChange={(v) => setDefaultFilters((p) => ({ ...p, temperature: v }))}
+                  />
+                  <FilterSelect
+                    label="Target Solution"
+                    value={defaultFilters.solution}
+                    options={defaultFilterOptions.solution}
+                    onChange={(v) => setDefaultFilters((p) => ({ ...p, solution: v }))}
+                  />
+                  <FilterSelect
+                    label="Product Family"
+                    value={defaultFilters.family}
+                    options={defaultFilterOptions.family}
+                    onChange={(v) => setDefaultFilters((p) => ({ ...p, family: v }))}
+                  />
+                </>
+              )}
             </div>
           </div>
         </aside>
 
-        {/* Results */}
         <div className="lg:col-span-3">
           <div className="flex items-center justify-between mb-6">
             <p className="text-sm text-gray-500">

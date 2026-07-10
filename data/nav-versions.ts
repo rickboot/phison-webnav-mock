@@ -7,6 +7,7 @@ export type NavVersionId =
   | "new-nav-2"
   | "new-nav-3"
   | "new-nav-4"
+  | "web-team-wip"
   | "custom";
 
 export type NavVersionConfig = {
@@ -15,6 +16,8 @@ export type NavVersionConfig = {
   description: string;
   sections: NavSection[];
   showHome: boolean;
+  /** Show Product Finder in utility nav (not top nav). */
+  showProductFinder?: boolean;
 };
 
 const d = "";
@@ -511,6 +514,110 @@ export const newNav4: NavSection[] = [
   supportSection,
 ];
 
+/** Web Team WIP */
+export const webTeamWip: NavSection[] = [
+  section("technology", "Technology", {
+    items: [
+      "Controller Architecture",
+      "Firmware and NAND / Data Management",
+      "AI Training and Inference",
+      "AI Acceleration and Optimization",
+      "Security and Data Integrity",
+      "Signal Integrity and Compliance",
+    ].map(leaf),
+  }),
+  section("solutions", "Solutions", {
+    groups: [
+      leafGroup("Automotive"),
+      group("Consumer", [
+        "Gaming",
+        "Notebook",
+        "Desktop / Workstation",
+        "External Storage",
+        "Handheld",
+      ]),
+      leafGroup("Database"),
+      leafGroup("HPC"),
+      leafGroup("Cloud Storage"),
+      leafGroup("Cold Storage"),
+      group("AI", [
+        "aiDAPTIV",
+        "Education",
+        "PC OEM / ISV",
+        "Enterprise",
+        "AI Workloads",
+      ]),
+      leafGroup("Edge Computing"),
+      leafGroup("Industrial / Factory Automation"),
+      leafGroup("Space, Aerospace & Defense"),
+      group("Signal IC", ["Retimer / Redriver"]),
+    ],
+  }),
+  section("products", "Products", {
+    groups: [
+      group("IMAGIN+ / Customized Solutions", [
+        "Modified: OEM Tuning",
+        "Optimized: Purpose-Built for Enterprise",
+        "Specialized: Deeply Tailored for Use Case",
+      ]),
+      group("Enterprise Storage", [
+        "Enterprise NVMe SSDs",
+        "SATA Enterprise SSDs",
+        "Boot Drive SSDs",
+      ]),
+      group("Consumer Controllers", ["By Product"]),
+      group("Embedded Storage", [
+        "UFS",
+        "eMMC",
+        "Client Controller",
+        "Industrial",
+        "DRAM-less Controllers",
+        "Compact Form Factors",
+      ]),
+      group("AI and High-Performance Computing", [
+        "aiDAPTIV",
+        "Inference",
+        "Fine-Tune Training",
+        "HPC",
+        "AI Workloads",
+        "High-Performance NVMe Enterprise SSDs",
+      ]),
+      group("Edge Computing", [
+        "Industrial SSDs",
+        "Extended Temperature SSDs",
+        "Compact Form Factors",
+        "Power-Optimized NVMe",
+        "Consumer",
+      ]),
+      group("Signal IC", ["Retimer / Redriver"]),
+    ],
+  }),
+  section("resources", "Resources", {
+    items: [
+      "Blog Articles",
+      "Product Brochures / Product Sheets",
+      "Whitepapers",
+      "Case Studies",
+      "Newsroom",
+    ].map(leaf),
+  }),
+  section("about", "About", {
+    items: [
+      "About Phison",
+      "Leadership",
+      "ESG",
+      "Investor Relations",
+      "Careers",
+    ].map(leaf),
+  }),
+  section("support", "Support", {
+    linkOnly: true,
+  }),
+  section("contact", "Contact", {
+    linkOnly: true,
+  }),
+];
+
 export const navVersions: NavVersionConfig[] = [
   {
     id: "current",
@@ -518,6 +625,14 @@ export const navVersions: NavVersionConfig[] = [
     description: "Live phison.com navigation",
     sections: currentNav,
     showHome: false,
+  },
+  {
+    id: "web-team-wip",
+    label: "Web Team WIP",
+    description: "Web team working draft",
+    sections: webTeamWip,
+    showHome: true,
+    showProductFinder: true,
   },
   {
     id: "new-nav-1",

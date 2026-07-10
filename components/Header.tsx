@@ -7,6 +7,7 @@ import type { NavVersionId } from "@/data/nav-versions";
 import { useNavVersion } from "./NavVersionProvider";
 import MegaMenu from "./MegaMenu";
 import NavEditorPanel from "./NavEditorPanel";
+import { utilityNav } from "@/data/nav";
 
 export default function Header() {
   const {
@@ -147,18 +148,15 @@ export default function Header() {
           </nav>
 
           <div className="header-utils hidden lg:flex items-center">
-            <button
-              type="button"
-              className={`nav-edit-toggle ${editorOpen ? "is-active" : ""}`}
-              onClick={() => {
-                setVersionId("custom");
-                setEditorOpen(true);
-                setVersionOpen(false);
-                setActiveMenu(null);
-              }}
-            >
-              Edit Custom…
-            </button>
+            {version.showProductFinder && (
+              <Link
+                href={utilityNav.productFinder.href}
+                className="util-link"
+                onMouseEnter={() => { cancelClose(); setActiveMenu(null); }}
+              >
+                {utilityNav.productFinder.label}
+              </Link>
+            )}
             <div className="nav-version-wrap" ref={versionRef}>
               <button
                 className="lang-pill"
@@ -192,6 +190,28 @@ export default function Header() {
                 </ul>
               )}
             </div>
+            <span
+              role="button"
+              tabIndex={0}
+              className={`nav-edit-toggle${editorOpen ? " is-active" : ""}`}
+              onClick={() => {
+                setVersionId("custom");
+                setEditorOpen(true);
+                setVersionOpen(false);
+                setActiveMenu(null);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setVersionId("custom");
+                  setEditorOpen(true);
+                  setVersionOpen(false);
+                  setActiveMenu(null);
+                }
+              }}
+            >
+              Edit Custom
+            </span>
             <button className="search-btn" aria-label="Search" type="button">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -251,7 +271,7 @@ export default function Header() {
                     setMobileOpen(false);
                   }}
                 >
-                  Edit Custom…
+                  Edit Custom
                 </button>
               </div>
 
@@ -325,6 +345,15 @@ export default function Header() {
                   )}
                 </div>
               ))}
+              {version.showProductFinder && (
+                <Link
+                  href={utilityNav.productFinder.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="block py-3 text-sm font-semibold text-phison-gray-text border-b border-phison-border"
+                >
+                  {utilityNav.productFinder.label}
+                </Link>
+              )}
             </div>
           </div>
         )}
