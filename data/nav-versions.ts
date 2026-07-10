@@ -465,7 +465,7 @@ export const newNav1: NavSection[] = [
 
 /** New Nav 2 — Storage & Components + AI Solutions */
 export const newNav2: NavSection[] = [
-  section("storage-components", "Storage & Components", {
+  section("storage-components", "Storage", {
     groups: storageAndComponentsGroups,
   }),
   section("ai-solutions", "AI Solutions", {
@@ -481,7 +481,7 @@ export const newNav2: NavSection[] = [
 
 /** New Nav 3 — Portfolio Ladder */
 export const newNav3: NavSection[] = [
-  section("storage-components", "Storage & Components", {
+  section("storage-components", "Storage", {
     groups: storageAndComponentsNav3,
   }),
   section("aidaptiv", "aiDAPTIV", {
@@ -497,7 +497,7 @@ export const newNav3: NavSection[] = [
 
 /** New Nav 4 — Storage & Components + AI Products & Platforms */
 export const newNav4: NavSection[] = [
-  section("storage-components", "Storage & Components", {
+  section("storage-components", "Storage", {
     groups: storageAndComponentsGroups,
   }),
   section("ai-products-platforms", "AI Products & Platforms", {
