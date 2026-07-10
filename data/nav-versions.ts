@@ -6,7 +6,8 @@ export type NavVersionId =
   | "new-nav-1"
   | "new-nav-2"
   | "new-nav-3"
-  | "new-nav-4";
+  | "new-nav-4"
+  | "custom";
 
 export type NavVersionConfig = {
   id: NavVersionId;
@@ -545,6 +546,13 @@ export const navVersions: NavVersionConfig[] = [
     description: "Storage & Components + AI Products & Platforms",
     sections: newNav4,
     showHome: true,
+  },
+  {
+    id: "custom",
+    label: "Custom",
+    description: "Your outline (edit in panel below)",
+    sections: [],
+    showHome: false,
   },
 ];
 

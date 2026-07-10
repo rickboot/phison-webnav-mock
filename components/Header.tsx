@@ -6,9 +6,17 @@ import Image from "next/image";
 import type { NavVersionId } from "@/data/nav-versions";
 import { useNavVersion } from "./NavVersionProvider";
 import MegaMenu from "./MegaMenu";
+import NavEditorPanel from "./NavEditorPanel";
 
 export default function Header() {
-  const { version, versions, versionId, setVersionId } = useNavVersion();
+  const {
+    version,
+    versions,
+    versionId,
+    setVersionId,
+    editorOpen,
+    setEditorOpen,
+  } = useNavVersion();
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileSection, setMobileSection] = useState<string | null>(null);
@@ -139,6 +147,18 @@ export default function Header() {
           </nav>
 
           <div className="header-utils hidden lg:flex items-center">
+            <button
+              type="button"
+              className={`nav-edit-toggle ${editorOpen ? "is-active" : ""}`}
+              onClick={() => {
+                setVersionId("custom");
+                setEditorOpen(true);
+                setVersionOpen(false);
+                setActiveMenu(null);
+              }}
+            >
+              Edit Custom…
+            </button>
             <div className="nav-version-wrap" ref={versionRef}>
               <button
                 className="lang-pill"
@@ -199,6 +219,8 @@ export default function Header() {
           </div>
         )}
 
+        <NavEditorPanel />
+
         {mobileOpen && (
           <div className="lg:hidden fixed inset-0 top-[90px] bg-white z-40 overflow-y-auto border-t border-phison-border">
             <div className="px-5 py-4">
@@ -220,6 +242,17 @@ export default function Header() {
                     </button>
                   ))}
                 </div>
+                <button
+                  type="button"
+                  className="mt-3 text-sm font-semibold text-phison-navy"
+                  onClick={() => {
+                    setVersionId("custom");
+                    setEditorOpen(true);
+                    setMobileOpen(false);
+                  }}
+                >
+                  Edit Custom…
+                </button>
               </div>
 
               {version.showHome && (
