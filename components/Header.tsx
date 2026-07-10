@@ -157,6 +157,15 @@ export default function Header() {
                 {utilityNav.productFinder.label}
               </Link>
             )}
+            {version.showContact && (
+              <Link
+                href={utilityNav.contactSales.href}
+                className="util-link"
+                onMouseEnter={() => { cancelClose(); setActiveMenu(null); }}
+              >
+                {utilityNav.contactSales.label}
+              </Link>
+            )}
             <div className="nav-version-wrap" ref={versionRef}>
               <button
                 className="lang-pill"
@@ -352,6 +361,15 @@ export default function Header() {
                   className="block py-3 text-sm font-semibold text-phison-gray-text border-b border-phison-border"
                 >
                   {utilityNav.productFinder.label}
+                </Link>
+              )}
+              {version.showContact && (
+                <Link
+                  href={utilityNav.contactSales.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="block py-3 text-sm font-semibold text-phison-gray-text border-b border-phison-border"
+                >
+                  {utilityNav.contactSales.label}
                 </Link>
               )}
             </div>

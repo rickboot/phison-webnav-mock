@@ -91,7 +91,7 @@ export default function MegaMenu({ section, onClose }: MegaMenuProps) {
                         {group.title}
                       </h3>
                     )}
-                    <ul className="space-y-0.5">
+                    <ul className="mega-menu-subnav space-y-0.5 pl-4">
                       {group.items.map((item) => (
                         <li key={`${group.title}-${item.label}`}>
                           <Link

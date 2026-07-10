@@ -7,6 +7,7 @@ export type NavVersionId =
   | "new-nav-2"
   | "new-nav-3"
   | "new-nav-4"
+  | "new-nav-5"
   | "web-team-wip"
   | "custom";
 
@@ -18,6 +19,8 @@ export type NavVersionConfig = {
   showHome: boolean;
   /** Show Product Finder in utility nav (not top nav). */
   showProductFinder?: boolean;
+  /** Show Contact Sales in utility nav (not top nav). */
+  showContact?: boolean;
 };
 
 const d = "";
@@ -618,6 +621,70 @@ export const webTeamWip: NavSection[] = [
   }),
 ];
 
+/** New Nav 5 — Storage + AI Products & Platforms (refined) */
+export const newNav5: NavSection[] = [
+  section("storage", "Storage", {
+    groups: storageAndComponentsGroups,
+  }),
+  section("ai-products-platforms", "AI Products & Platforms", {
+    groups: [
+      leafGroup("AI Overview"),
+      leafGroup("Storage for AI & HPC"),
+      leafGroup("aiDAPTIV Overview"),
+      group("aiDAPTIV: Where It Runs", [
+        "AI PCs / Client Systems",
+        "Edge AI Systems",
+        "Workstations",
+        "Servers",
+        "OEM / SI Solutions",
+      ]),
+      group("aiDAPTIV: What It Enables", [
+        "Larger Local Models",
+        "Local Inference",
+        "Longer Context",
+        "KV Cache Extension & Reuse",
+        "Dynamic MoE",
+        "Elastic Fine-Tuning",
+      ]),
+      group("aiDAPTIV: Product Components", [
+        "aiDAPTIV Software",
+        "aiDAPTIV Cache Memory",
+      ]),
+      group("aiDAPTIV: Build & Integrate", [
+        "Developers & ISVs",
+        "Integration Resources",
+        "Technical Documentation",
+      ]),
+      group("aiDAPTIV: Evaluate", [
+        "Technical Resources",
+        "Whitepapers",
+        "Contact Sales",
+      ]),
+      leafGroup("AI Data Platform Overview"),
+      group("AIDP: On-Prem AI Platform", [
+        "Full AI Software Stack",
+        "On-Prem AI Infrastructure",
+        "Hardware Server Reference",
+        "Partner Ecosystem",
+      ]),
+      group("AIDP: Architecture & Deployment", [
+        "How AIDP Uses aiDAPTIV",
+        "AI Software Modules",
+        "Enterprise AI Deployment",
+        "Reference Architectures",
+      ]),
+      group("AIDP: Evaluate", [
+        "Use Cases",
+        "Technical Resources",
+        "Contact Sales",
+      ]),
+    ],
+  }),
+  resourcesSection,
+  companySection,
+  supportSection,
+];
+
 export const navVersions: NavVersionConfig[] = [
   {
     id: "current",
@@ -659,6 +726,13 @@ export const navVersions: NavVersionConfig[] = [
     label: "New Nav 4",
     description: "Storage & Components + AI Products & Platforms",
     sections: newNav4,
+    showHome: true,
+  },
+  {
+    id: "new-nav-5",
+    label: "New Nav 5",
+    description: "Storage + AI Products & Platforms",
+    sections: newNav5,
     showHome: true,
   },
   {

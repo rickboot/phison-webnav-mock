@@ -1231,6 +1231,10 @@ a:hover {
   margin-top: 0.5rem;
 }
 
+.mega-menu-subnav {
+  padding-left: 1rem !important;
+}
+
 /* Live phison.com mega-menu — mirrors #g-header .submenu / .flex_div */
 .live-mega {
   position: absolute;

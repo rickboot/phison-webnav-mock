@@ -5,7 +5,7 @@ export const CUSTOM_OUTLINE_STORAGE_KEY = "phison-nav-custom-outline";
 export const NAV_SHARE_HASH_PREFIX = "nav=";
 
 export function sectionsToOutline(sections: NavSection[], showHome = false): string {
-  const pad = (level: number) => " ".repeat(level * 4);
+  const pad = (level: number) => "\t".repeat(level);
   const lines: string[] = [];
   if (showHome) lines.push("Home");
 
@@ -36,7 +36,7 @@ export function sectionsToOutline(sections: NavSection[], showHome = false): str
 /** First-use Custom outline — seeded from New Nav 1. */
 export const DEFAULT_CUSTOM_OUTLINE =
   `# Custom nav (seeded from New Nav 1 — Classic B2B)
-# Indent with 4 spaces. Up to 3 levels. Lines starting with # are comments.
+# Indent with Tab. Up to 3 levels. Lines starting with # are comments.
 # A top-level "Home" adds a Home link. Edit, then Apply.
 #
 ` + sectionsToOutline(newNav1, true);
@@ -87,43 +87,42 @@ function uniqueIds(labels: string[]): string[] {
   });
 }
 
-/** Measure indent; tabs count as 2 spaces. */
-function indentWidth(raw: string): number {
-  let n = 0;
-  for (const ch of raw) {
-    if (ch === " ") n += 1;
-    else if (ch === "\t") n += 2;
-    else break;
+/** Leading indent: tabs preferred (1 tab = 1 level). Spaces also work with any consistent width. */
+function measureLeading(raw: string): {
+  tabs: number;
+  spaces: number;
+  contentIndex: number;
+} {
+  let i = 0;
+  let tabs = 0;
+  let spaces = 0;
+  while (raw[i] === "\t") {
+    tabs += 1;
+    i += 1;
   }
-  return n;
+  while (raw[i] === " ") {
+    spaces += 1;
+    i += 1;
+  }
+  return { tabs, spaces, contentIndex: i };
 }
 
-function detectIndentUnit(lines: { indent: number }[]): number {
-  const positives = lines.map((l) => l.indent).filter((n) => n > 0);
-  if (positives.length === 0) return 4;
+function detectSpaceUnit(spaceWidths: number[]): number {
+  const positives = spaceWidths.filter((n) => n > 0);
+  if (positives.length === 0) return 2;
   return Math.min(...positives);
 }
 
-function buildTree(lines: { line: number; indent: number; label: string }[]): {
+function buildTree(lines: { line: number; level: number; label: string }[]): {
   roots: OutlineNode[];
   errors: ParseError[];
 } {
   const errors: ParseError[] = [];
   const roots: OutlineNode[] = [];
-  const stack: { indent: number; node: OutlineNode }[] = [];
-  const unit = detectIndentUnit(lines);
+  const stack: { level: number; node: OutlineNode }[] = [];
 
   for (const row of lines) {
-    if (row.indent % unit !== 0) {
-      errors.push({
-        line: row.line,
-        message: `Indent must be multiples of ${unit} spaces`,
-      });
-      continue;
-    }
-
-    const level = row.indent / unit;
-    if (level > 2) {
+    if (row.level > 2) {
       errors.push({
         line: row.line,
         message: "Maximum depth is 3 (section → group → item)",
@@ -131,14 +130,13 @@ function buildTree(lines: { line: number; indent: number; label: string }[]): {
       continue;
     }
 
-    while (stack.length && stack[stack.length - 1].indent >= row.indent) {
+    while (stack.length && stack[stack.length - 1].level >= row.level) {
       stack.pop();
     }
 
-    const expectedParentIndent = level === 0 ? -1 : (level - 1) * unit;
-    if (level > 0) {
+    if (row.level > 0) {
       const parent = stack[stack.length - 1];
-      if (!parent || parent.indent !== expectedParentIndent) {
+      if (!parent || parent.level !== row.level - 1) {
         errors.push({
           line: row.line,
           message: "Skipped indent level — check nesting",
@@ -148,12 +146,12 @@ function buildTree(lines: { line: number; indent: number; label: string }[]): {
     }
 
     const node: OutlineNode = { label: row.label, line: row.line, children: [] };
-    if (level === 0) {
+    if (row.level === 0) {
       roots.push(node);
     } else {
       stack[stack.length - 1].node.children.push(node);
     }
-    stack.push({ indent: row.indent, node });
+    stack.push({ level: row.level, node });
   }
 
   return { roots, errors };
@@ -205,7 +203,12 @@ function sectionFromNode(node: OutlineNode, id: string): NavSection {
 
 export function parseNavOutline(text: string): ParseResult {
   const errors: ParseError[] = [];
-  const rows: { line: number; indent: number; label: string }[] = [];
+  const pending: {
+    line: number;
+    tabs: number;
+    spaces: number;
+    label: string;
+  }[] = [];
 
   const rawLines = text.replace(/\r\n/g, "\n").split("\n");
   rawLines.forEach((raw, i) => {
@@ -214,13 +217,26 @@ export function parseNavOutline(text: string): ParseResult {
     if (!trimmedRight.trim()) return;
     if (trimmedRight.trimStart().startsWith("#")) return;
 
-    const indent = indentWidth(trimmedRight);
-    const label = trimmedRight.slice(indent).trim();
+    const { tabs, spaces, contentIndex } = measureLeading(trimmedRight);
+    const label = trimmedRight.slice(contentIndex).trim();
     if (!label) return;
-    rows.push({ line, indent, label });
+
+    if (tabs > 0 && spaces > 0) {
+      errors.push({
+        line,
+        message: "Don't mix tabs and spaces on the same line",
+      });
+      return;
+    }
+
+    pending.push({ line, tabs, spaces, label });
   });
 
-  if (rows.length === 0) {
+  if (errors.length > 0) {
+    return { ok: false, errors };
+  }
+
+  if (pending.length === 0) {
     return {
       ok: false,
       errors: [
@@ -230,6 +246,29 @@ export function parseNavOutline(text: string): ParseResult {
         },
       ],
     };
+  }
+
+  const spaceOnly = pending.filter((p) => p.tabs === 0);
+  const spaceUnit = detectSpaceUnit(spaceOnly.map((p) => p.spaces));
+
+  const rows: { line: number; level: number; label: string }[] = [];
+  for (const p of pending) {
+    if (p.tabs > 0) {
+      rows.push({ line: p.line, level: p.tabs, label: p.label });
+      continue;
+    }
+    if (p.spaces % spaceUnit !== 0) {
+      errors.push({
+        line: p.line,
+        message: `Indent with Tab (preferred), or consistent spaces (multiples of ${spaceUnit})`,
+      });
+      continue;
+    }
+    rows.push({ line: p.line, level: p.spaces / spaceUnit, label: p.label });
+  }
+
+  if (errors.length > 0) {
+    return { ok: false, errors };
   }
 
   const { roots, errors: treeErrors } = buildTree(rows);

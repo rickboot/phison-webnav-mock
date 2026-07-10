@@ -45,7 +45,7 @@ function NavEditorForm({ initialOutline }: { initialOutline: string }) {
           <div className="nav-editor-title-block">
             <p className="nav-editor-title">Custom nav outline</p>
             <p className="nav-editor-hint">
-              4-space indent · 3 levels max · # for comments · Apply to preview as Custom
+              Tab to indent · 3 levels max · # for comments · Apply to preview as Custom
               {versionId === "custom" ? " · showing Custom" : ""}
             </p>
           </div>
@@ -70,6 +70,18 @@ function NavEditorForm({ initialOutline }: { initialOutline: string }) {
           className="nav-editor-textarea"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key !== "Tab") return;
+            e.preventDefault();
+            const el = e.currentTarget;
+            const start = el.selectionStart;
+            const end = el.selectionEnd;
+            const next = draft.slice(0, start) + "\t" + draft.slice(end);
+            setDraft(next);
+            requestAnimationFrame(() => {
+              el.selectionStart = el.selectionEnd = start + 1;
+            });
+          }}
           spellCheck={false}
           aria-label="Navigation outline"
           rows={12}
