@@ -1,14 +1,78 @@
 "use client";
 
 import Link from "next/link";
-import { NavSection } from "@/data/nav";
+import { NavGroup, NavSection } from "@/data/nav";
 
 type MegaMenuProps = {
   section: NavSection;
   onClose: () => void;
 };
 
-export default function MegaMenu({ section, onClose }: MegaMenuProps) {
+function LeafLink({
+  label,
+  href,
+  onClose,
+}: Readonly<{
+  label: string;
+  href: string;
+  onClose: () => void;
+}>) {
+  return (
+    <Link
+      href={href}
+      onClick={(e) => {
+        if (href === "#") e.preventDefault();
+        onClose();
+      }}
+      className="text-[0.8125rem] font-semibold text-phison-navy hover:text-phison-orange transition-colors"
+    >
+      {label}
+    </Link>
+  );
+}
+
+function GroupColumn({
+  group,
+  onClose,
+}: Readonly<{ group: NavGroup; onClose: () => void }>) {
+  return (
+    <div>
+      {group.title.trim() && (
+        <h3 className="text-[0.75rem] font-bold text-phison-navy uppercase tracking-wide mb-3">
+          {group.title}
+        </h3>
+      )}
+      <ul className="mega-menu-subnav space-y-0.5 pl-4">
+        {group.items.map((item) => (
+          <li key={`${group.title}-${item.label}`}>
+            <Link
+              href={item.href}
+              onClick={(e) => {
+                if (item.href === "#") e.preventDefault();
+                onClose();
+              }}
+              className="group block py-1.5"
+            >
+              <span className="text-[0.8125rem] font-medium text-phison-navy group-hover:text-phison-orange transition-colors">
+                {item.label}
+              </span>
+              {item.description ? (
+                <span className="block text-[0.6875rem] text-phison-muted mt-0.5 leading-relaxed line-clamp-2">
+                  {item.description}
+                </span>
+              ) : null}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default function MegaMenu({
+  section,
+  onClose,
+}: Readonly<MegaMenuProps>) {
   const hasGroups = section.groups && section.groups.length > 0;
   const isLive = section.megaStyle === "live";
   const groups = section.groups || [];
@@ -48,6 +112,13 @@ export default function MegaMenu({ section, onClose }: MegaMenuProps) {
     );
   }
 
+  const hubLinks = groups.filter((g) => g.items.length === 0 && g.title.trim());
+  const columns = groups.filter((g) => g.items.length > 0);
+  const columnCount = columns.length;
+  let columnGridClass = "grid-cols-2 lg:grid-cols-3";
+  if (columnCount === 1) columnGridClass = "grid-cols-1";
+  else if (columnCount > 4) columnGridClass = "grid-cols-2 xl:grid-cols-3";
+
   return (
     <div className="mega-menu-enter absolute left-0 right-0 top-full bg-phison-gray border-t border-phison-border z-50">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-8">
@@ -70,54 +141,27 @@ export default function MegaMenu({ section, onClose }: MegaMenuProps) {
         </div>
 
         {hasGroups ? (
-          <div className={`grid gap-x-10 gap-y-6 ${section.groups!.length > 4 ? "grid-cols-2 xl:grid-cols-3" : "grid-cols-2 lg:grid-cols-3"}`}>
-            {section.groups!.map((group) => (
-              <div key={group.title || "col"}>
-                {group.items.length === 0 ? (
-                  <Link
-                    href={group.title ? "#" : section.href}
-                    onClick={(e) => {
-                      if ((group.title ? "#" : section.href) === "#") e.preventDefault();
-                      onClose();
-                    }}
-                    className="text-[0.8125rem] font-semibold text-phison-navy hover:text-phison-orange transition-colors"
-                  >
-                    {group.title}
-                  </Link>
-                ) : (
-                  <>
-                    {group.title.trim() && (
-                      <h3 className="text-[0.75rem] font-bold text-phison-navy uppercase tracking-wide mb-3">
-                        {group.title}
-                      </h3>
-                    )}
-                    <ul className="mega-menu-subnav space-y-0.5 pl-4">
-                      {group.items.map((item) => (
-                        <li key={`${group.title}-${item.label}`}>
-                          <Link
-                            href={item.href}
-                            onClick={(e) => {
-                              if (item.href === "#") e.preventDefault();
-                              onClose();
-                            }}
-                            className="group block py-1.5"
-                          >
-                            <span className="text-[0.8125rem] font-medium text-phison-navy group-hover:text-phison-orange transition-colors">
-                              {item.label}
-                            </span>
-                            {item.description ? (
-                              <span className="block text-[0.6875rem] text-phison-muted mt-0.5 leading-relaxed line-clamp-2">
-                                {item.description}
-                              </span>
-                            ) : null}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                )}
+          <div className="flex flex-col gap-6">
+            {hubLinks.length > 0 && (
+              <div className="mega-menu-hub flex flex-wrap items-center gap-x-6 gap-y-2">
+                {hubLinks.map((group) => (
+                  <LeafLink
+                    key={group.title}
+                    label={group.title}
+                    href="#"
+                    onClose={onClose}
+                  />
+                ))}
               </div>
-            ))}
+            )}
+
+            {columns.length > 0 && (
+              <div className={`grid gap-x-10 gap-y-6 ${columnGridClass}`}>
+                {columns.map((group) => (
+                  <GroupColumn key={group.title || "col"} group={group} onClose={onClose} />
+                ))}
+              </div>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-2">

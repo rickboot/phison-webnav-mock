@@ -1341,6 +1341,16 @@ a:hover {
   padding-left: 1rem !important;
 }
 
+.mega-menu-hub {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--phison-border, #e5e7eb);
+}
+
+.mega-menu-hub:only-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
 /* Live phison.com mega-menu — mirrors #g-header .submenu / .flex_div */
 .live-mega {
   position: absolute;

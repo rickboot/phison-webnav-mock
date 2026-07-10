@@ -1,0 +1,235 @@
+# Phison nav option structures
+# Format: tab-indented outline (same as Custom nav editor)
+# Levels: Section → Group → Item  (max 3)
+# Top-level "Home" adds a Home link
+
+############################################################
+# Current
+# id: current
+# Live phison.com navigation
+############################################################
+
+Technology
+Applications
+	Embedded
+	Consumer
+	IMAGIN+
+	aiDAPTIV+
+	Signal Conditioning
+	Automotive
+	Gaming
+	Security
+Enterprise
+Solutions
+	Solutions
+		Overview
+		SSD
+		UFS
+		eMMC
+		Memory Cards
+		USB
+	Featured Products
+		E37T
+		E28
+		E31T
+		E18
+		U21
+		U17 / U18
+	Partners
+		E26
+Company
+	About
+		Overview
+		Investors
+		ESG
+		Careers
+		Global Talents
+		Contact Us
+	Media
+		Newsroom
+		Press Releases
+		Phison in the News
+		Events
+		Media Kits
+Investors
+ESG
+Blog
+Contact
+
+############################################################
+# Web Team WIP
+# id: web-team-wip
+# Web team working draft
+############################################################
+
+Home
+Technology
+	Controller Architecture
+	Firmware and NAND / Data Management
+	AI Training and Inference
+	AI Acceleration and Optimization
+	Security and Data Integrity
+	Signal Integrity and Compliance
+Solutions
+	Automotive
+	Consumer
+		Gaming
+		Notebook
+		Desktop / Workstation
+		External Storage
+		Handheld
+	Database
+	HPC
+	Cloud Storage
+	Cold Storage
+	AI
+		aiDAPTIV
+		Education
+		PC OEM / ISV
+		Enterprise
+		AI Workloads
+	Edge Computing
+	Industrial / Factory Automation
+	Space, Aerospace & Defense
+	Signal IC
+		Retimer / Redriver
+Products
+	IMAGIN+ / Customized Solutions
+		Modified: OEM Tuning
+		Optimized: Purpose-Built for Enterprise
+		Specialized: Deeply Tailored for Use Case
+	Enterprise Storage
+		Enterprise NVMe SSDs
+		SATA Enterprise SSDs
+		Boot Drive SSDs
+	Consumer Controllers
+		By Product
+	Embedded Storage
+		UFS
+		eMMC
+		Client Controller
+		Industrial
+		DRAM-less Controllers
+		Compact Form Factors
+	AI and High-Performance Computing
+		aiDAPTIV
+		Inference
+		Fine-Tune Training
+		HPC
+		AI Workloads
+		High-Performance NVMe Enterprise SSDs
+	Edge Computing
+		Industrial SSDs
+		Extended Temperature SSDs
+		Compact Form Factors
+		Power-Optimized NVMe
+		Consumer
+	Signal IC
+		Retimer / Redriver
+Resources
+	Blog Articles
+	Product Brochures / Product Sheets
+	Whitepapers
+	Case Studies
+	Newsroom
+About
+	About Phison
+	Leadership
+	ESG
+	Investor Relations
+	Careers
+Support
+Contact
+
+############################################################
+# Rick 1
+# id: rick-1
+# Storage + AI Solutions
+############################################################
+
+Home
+Storage
+	Enterprise & Data Center
+		Enterprise NVMe SSDs
+		SATA Enterprise SSDs
+		Boot Drive SSDs
+		High-Endurance SSDs
+		High-Capacity SSDs
+		Cloud Storage
+		Database
+		Cold Storage
+		HPC Storage
+	Client & Consumer
+		Consumer Controllers
+		Gaming
+		Notebook
+		Desktop / Workstation
+		Handheld
+		External Storage
+	Embedded & Industrial
+		UFS
+		eMMC
+		Industrial SSDs
+		DRAM-less Controllers
+		Extended Temperature SSDs
+		Compact Form Factors
+		Power-Optimized NVMe
+	Market-Specific Storage
+		Automotive Storage
+		Space, Aerospace & Defense Storage
+		Edge Computing
+		Factory Automation
+	Components & Signal IC
+		NAND Controllers
+		Retimers
+		Redrivers
+		Signal Integrity / Compliance
+	Custom Design Services
+		IMAGIN+
+		Modified: OEM Tuning
+		Optimized: Purpose-Built Adaptation
+		Specialized: Deep Custom Engineering
+	Product Finder
+AI Solutions
+	AI Overview
+	Storage for AI & HPC
+	aiDAPTIV
+		Overview
+		Where It Runs
+		What It Enables
+		Product Components
+		Build & Integrate
+		Evaluate
+	AI Data Platform
+		Overview
+		On-Prem AI Platform
+		Software Stack
+		Hardware Reference
+		Partner Ecosystem
+		Architecture & Deployment
+		Evaluate
+Resources
+	Whitepapers
+	Case Studies
+	Product Brochures & Sheets
+	Blog
+	Newsroom
+	Events
+	Videos / Demos
+	Technical Library
+Company
+	About Phison
+	Why Phison
+	Leadership
+	ESG
+	Investor Relations
+	Careers
+	Contact
+Support
+	Support Center
+	Downloads
+	Product Documentation
+	Warranty / RMA
+	Contact Support
+	Partner Support
+	FAQs

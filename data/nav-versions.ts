@@ -3,11 +3,7 @@ import { utilityNav } from "./nav";
 
 export type NavVersionId =
   | "current"
-  | "new-nav-1"
-  | "new-nav-2"
-  | "new-nav-3"
-  | "new-nav-4"
-  | "new-nav-5"
+  | "rick-1"
   | "web-team-wip"
   | "custom";
 
@@ -284,239 +280,6 @@ const storageAndComponentsGroups: NavGroup[] = [
   leafGroup("Product Finder"),
 ];
 
-const storageAndComponentsNav3: NavGroup[] = [
-  group("Enterprise & Data Center", [
-    "Enterprise NVMe SSDs",
-    "SATA Enterprise SSDs",
-    "Boot Drive SSDs",
-    "High-Endurance SSDs",
-    "High-Capacity SSDs",
-    "Cloud Storage",
-    "Database",
-    "Cold Storage",
-    "HPC Storage",
-  ]),
-  group("Client & Consumer", [
-    "Consumer Controllers",
-    "Gaming",
-    "Notebook",
-    "Desktop / Workstation",
-    "Handheld",
-    "External Storage",
-  ]),
-  group("Embedded & Industrial", [
-    "UFS",
-    "eMMC",
-    "Industrial SSDs",
-    "DRAM-less Controllers",
-    "Extended Temperature SSDs",
-    "Compact Form Factors",
-    "Power-Optimized NVMe",
-  ]),
-  group("Market-Specific Storage", [
-    "AI & HPC Storage",
-    "Automotive Storage",
-    "Space, Aerospace & Defense Storage",
-    "Edge Computing",
-    "Factory Automation",
-  ]),
-  group("Components & Signal IC", [
-    "NAND Controllers",
-    "Retimers",
-    "Redrivers",
-    "Signal Integrity / Compliance",
-  ]),
-  leafGroup("Custom Design Services / IMAGIN+"),
-  leafGroup("Product Finder"),
-];
-
-const aidaptivItems = [
-  "Overview",
-  "AI Memory Extension",
-  "How aiDAPTIV Works",
-  "Client AI / AI PC",
-  "Edge AI",
-  "Server / Workstation AI",
-  "Local Inference",
-  "KV Cache Extension & Reuse",
-  "Dynamic MoE",
-  "Elastic Fine-Tuning",
-  "aiDAPTIV Cache Memory",
-  "For Developers & ISVs",
-  "Integration Resources",
-  "Technical Resources",
-  "Evaluate",
-];
-
-const aidaptivItemsNav2 = [
-  "Overview",
-  "AI Memory Extension",
-  "How aiDAPTIV Works",
-  "Client AI / AI PC",
-  "Edge AI",
-  "Server / Workstation AI",
-  "Local Inference",
-  "KV Cache Extension & Reuse",
-  "Dynamic MoE",
-  "Elastic Fine-Tuning",
-  "aiDAPTIV Cache Memory",
-  "For Developers & ISVs",
-  "Integration Resources",
-  "Evaluate",
-];
-
-const aidpItems = [
-  "Overview",
-  "Full AI Software Stack",
-  "On-Prem AI Infrastructure",
-  "Hardware Server Reference",
-  "Partner Ecosystem",
-  "How AIDP Uses aiDAPTIV",
-  "AI Software Modules",
-  "Enterprise AI Deployment",
-  "Reference Architectures",
-  "Use Cases",
-  "Technical Resources",
-  "Contact Sales",
-];
-
-const aidpItemsNav2 = [
-  "Overview",
-  "Full AI Software Stack",
-  "On-Prem AI Infrastructure",
-  "Hardware Server Reference",
-  "Partner Ecosystem",
-  "How AIDP Uses aiDAPTIV",
-  "AI Software Modules",
-  "Enterprise AI Deployment",
-  "Reference Architectures",
-  "Use Cases",
-];
-
-/** New Nav 1 — Classic B2B Structure */
-export const newNav1: NavSection[] = [
-  section("solutions", "Solutions", {
-    items: [
-      "AI & HPC Storage",
-      "Enterprise & Data Center",
-      "Cloud Storage",
-      "Database",
-      "Cold Storage",
-      "Edge & Industrial",
-      "Automotive",
-      "Client & Consumer",
-      "Space, Aerospace & Defense",
-      "Signal Integrity",
-    ].map(leaf),
-  }),
-  section("products", "Products", {
-    groups: [
-      group("Enterprise Storage", [
-        "Enterprise NVMe SSDs",
-        "SATA Enterprise SSDs",
-        "Boot Drive SSDs",
-        "High-Endurance SSDs",
-        "High-Capacity SSDs",
-      ]),
-      group("Client & Consumer", [
-        "Consumer Controllers",
-        "Gaming",
-        "Notebook",
-        "Desktop / Workstation",
-        "Handheld",
-        "External Storage",
-      ]),
-      group("Embedded & Industrial", [
-        "UFS",
-        "eMMC",
-        "Industrial SSDs",
-        "DRAM-less Controllers",
-        "Extended Temperature SSDs",
-        "Compact Form Factors",
-      ]),
-      leafGroup("NAND Controllers"),
-      group("Signal IC", ["Retimers", "Redrivers"]),
-      leafGroup("Custom Design Services / IMAGIN+"),
-    ],
-  }),
-  section("platforms", "Platforms", {
-    groups: [
-      group("aiDAPTIV", [
-        "AI Memory Extension",
-        "Client AI / AI PC",
-        "Edge AI",
-        "Server / Workstation AI",
-        "KV Cache Extension & Reuse",
-        "Dynamic MoE",
-        "Elastic Fine-Tuning",
-        "For Developers & ISVs",
-        "Technical Resources",
-      ]),
-      group("AI Data Platform", [
-        "Full AI Software Stack",
-        "On-Prem AI Infrastructure",
-        "Hardware Server Reference",
-        "Partner Ecosystem",
-        "How AIDP Uses aiDAPTIV",
-        "AI Software Modules",
-        "Reference Architectures",
-        "Use Cases",
-      ]),
-    ],
-  }),
-  resourcesSection,
-  companySection,
-  supportSection,
-];
-
-/** New Nav 2 — Storage & Components + AI Solutions */
-export const newNav2: NavSection[] = [
-  section("storage-components", "Storage", {
-    groups: storageAndComponentsGroups,
-  }),
-  section("ai-solutions", "AI Solutions", {
-    groups: [
-      group("aiDAPTIV", aidaptivItemsNav2),
-      group("AI Data Platform", aidpItemsNav2),
-    ],
-  }),
-  resourcesSection,
-  companySection,
-  supportSection,
-];
-
-/** New Nav 3 — Portfolio Ladder */
-export const newNav3: NavSection[] = [
-  section("storage-components", "Storage", {
-    groups: storageAndComponentsNav3,
-  }),
-  section("aidaptiv", "aiDAPTIV", {
-    items: aidaptivItems.map(leaf),
-  }),
-  section("ai-data-platform", "AI Data Platform", {
-    items: aidpItems.map(leaf),
-  }),
-  resourcesSection,
-  companySection,
-  supportSection,
-];
-
-/** New Nav 4 — Storage & Components + AI Products & Platforms */
-export const newNav4: NavSection[] = [
-  section("storage-components", "Storage", {
-    groups: storageAndComponentsGroups,
-  }),
-  section("ai-products-platforms", "AI Products & Platforms", {
-    groups: [
-      group("aiDAPTIV", aidaptivItems),
-      group("AI Data Platform", aidpItems),
-    ],
-  }),
-  resourcesSection,
-  companySection,
-  supportSection,
-];
-
 /** Web Team WIP */
 export const webTeamWip: NavSection[] = [
   section("technology", "Technology", {
@@ -621,62 +384,31 @@ export const webTeamWip: NavSection[] = [
   }),
 ];
 
-/** New Nav 5 — Storage + AI Products & Platforms (refined) */
-export const newNav5: NavSection[] = [
+/** Rick 1 — Storage + AI Solutions (AI menu as clean router) */
+export const rick1: NavSection[] = [
   section("storage", "Storage", {
     groups: storageAndComponentsGroups,
   }),
-  section("ai-products-platforms", "AI Products & Platforms", {
+  section("ai-solutions", "AI Solutions", {
     groups: [
       leafGroup("AI Overview"),
       leafGroup("Storage for AI & HPC"),
-      leafGroup("aiDAPTIV Overview"),
-      group("aiDAPTIV: Where It Runs", [
-        "AI PCs / Client Systems",
-        "Edge AI Systems",
-        "Workstations",
-        "Servers",
-        "OEM / SI Solutions",
+      group("aiDAPTIV", [
+        "Overview",
+        "Where It Runs",
+        "What It Enables",
+        "Product Components",
+        "Build & Integrate",
+        "Evaluate",
       ]),
-      group("aiDAPTIV: What It Enables", [
-        "Larger Local Models",
-        "Local Inference",
-        "Longer Context",
-        "KV Cache Extension & Reuse",
-        "Dynamic MoE",
-        "Elastic Fine-Tuning",
-      ]),
-      group("aiDAPTIV: Product Components", [
-        "aiDAPTIV Software",
-        "aiDAPTIV Cache Memory",
-      ]),
-      group("aiDAPTIV: Build & Integrate", [
-        "Developers & ISVs",
-        "Integration Resources",
-        "Technical Documentation",
-      ]),
-      group("aiDAPTIV: Evaluate", [
-        "Technical Resources",
-        "Whitepapers",
-        "Contact Sales",
-      ]),
-      leafGroup("AI Data Platform Overview"),
-      group("AIDP: On-Prem AI Platform", [
-        "Full AI Software Stack",
-        "On-Prem AI Infrastructure",
-        "Hardware Server Reference",
+      group("AI Data Platform", [
+        "Overview",
+        "On-Prem AI Platform",
+        "Software Stack",
+        "Hardware Reference",
         "Partner Ecosystem",
-      ]),
-      group("AIDP: Architecture & Deployment", [
-        "How AIDP Uses aiDAPTIV",
-        "AI Software Modules",
-        "Enterprise AI Deployment",
-        "Reference Architectures",
-      ]),
-      group("AIDP: Evaluate", [
-        "Use Cases",
-        "Technical Resources",
-        "Contact Sales",
+        "Architecture & Deployment",
+        "Evaluate",
       ]),
     ],
   }),
@@ -701,38 +433,10 @@ export const navVersions: NavVersionConfig[] = [
     showHome: true,
   },
   {
-    id: "new-nav-1",
-    label: "New Nav 1",
-    description: "Classic B2B Structure",
-    sections: newNav1,
-    showHome: true,
-  },
-  {
-    id: "new-nav-2",
-    label: "New Nav 2",
-    description: "Storage & Components + AI Solutions",
-    sections: newNav2,
-    showHome: true,
-  },
-  {
-    id: "new-nav-3",
-    label: "New Nav 3",
-    description: "Portfolio Ladder",
-    sections: newNav3,
-    showHome: true,
-  },
-  {
-    id: "new-nav-4",
-    label: "New Nav 4",
-    description: "Storage & Components + AI Products & Platforms",
-    sections: newNav4,
-    showHome: true,
-  },
-  {
-    id: "new-nav-5",
-    label: "New Nav 5",
-    description: "Storage + AI Products & Platforms",
-    sections: newNav5,
+    id: "rick-1",
+    label: "Rick 1",
+    description: "Storage + AI Solutions",
+    sections: rick1,
     showHome: true,
   },
   {
