@@ -24,7 +24,16 @@ type Slide =
       id: string;
       image: string;
       alt: string;
-      kind: "image";
+      kind: "devops";
+      href: string;
+    }
+  | {
+      id: string;
+      image: string;
+      alt: string;
+      kind: "x201";
+      cta: string;
+      href: string;
     };
 
 const slides: Slide[] = [
@@ -47,13 +56,16 @@ const slides: Slide[] = [
     id: "devops",
     image: "/phison-original/devops-banner.webp",
     alt: "DevOps Dozen Award",
-    kind: "image",
+    kind: "devops",
+    href: "https://devopsdozen.com/devops-dozen-2026-tools-and-services-award-winners/",
   },
   {
     id: "x201",
     image: "/phison-original/x201-banner.png",
     alt: "Pascari X201 and D201",
-    kind: "image",
+    kind: "x201",
+    cta: "Explore Use Cases",
+    href: "https://phisonblog.com/powering-the-worlds-most-demanding-workloads/",
   },
 ];
 
@@ -81,7 +93,11 @@ export default function HeroCarousel() {
             src={s.image}
             alt={s.alt}
             fill
-            className="object-cover object-[center_top]"
+            className={
+              s.kind === "devops"
+                ? "object-cover hero-bg-devops"
+                : "object-cover object-[center_top]"
+            }
             priority={i === 0}
             sizes="100vw"
           />
@@ -120,6 +136,63 @@ export default function HeroCarousel() {
                 <Link href={s.href} className="hero-btn">
                   {s.cta}
                 </Link>
+              </div>
+            </div>
+          )}
+
+          {s.kind === "devops" && (
+            <>
+              <img
+                src="/phison-original/DevOpsDozenAward1920x450_Product.png"
+                alt=""
+                className="hero-devops-product"
+                aria-hidden
+              />
+              <a
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hero-slide-link"
+                aria-label="DevOps Dozen 2026 award winners"
+              />
+              <div className="hero-caption">
+                <div className="hero-caption-devops">
+                  <div className="hero-devops-logo">
+                    <Image
+                      src="/phison-original/DevOpsDozenAward1920x450_Logo.png"
+                      alt=""
+                      width={219}
+                      height={65}
+                    />
+                  </div>
+                  <h2 className="hero-title-devops">
+                    Best DevOps Industry
+                    <br />
+                    Implementation
+                  </h2>
+                </div>
+              </div>
+            </>
+          )}
+
+          {s.kind === "x201" && (
+            <div className="hero-caption">
+              <div className="hero-caption-d206v">
+                <h2 className="hero-title-d206v">
+                  The NEW Pascari X201 and D201 Enterprise{" "}
+                  <br className="hero-br-desktop" />
+                  SSDs Redefine How Organizations Accelerate{" "}
+                  <br className="hero-br-desktop" />
+                  AI, Analytics, and Cloud-Scale Performance
+                </h2>
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hero-btn"
+                >
+                  {s.cta}
+                </a>
               </div>
             </div>
           )}

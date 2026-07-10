@@ -216,8 +216,16 @@ a:hover {
 }
 
 .hero-slide.active .hero-caption-computex,
-.hero-slide.active .hero-caption-d206v {
+.hero-slide.active .hero-caption-d206v,
+.hero-slide.active .hero-caption-devops {
   animation: fadeBottom 0.7s ease-in-out 0.15s both;
+}
+
+.hero-slide-link {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  cursor: pointer;
 }
 
 .hero-dots {
@@ -367,14 +375,90 @@ a:hover {
   color: #132951;
 }
 
+/* Live: background-position: right 24% center ≈ 76% from left */
+.hero-bg-devops {
+  object-position: 76% center;
+}
+
+/* Live: Product.png at 95% center, height ~460/1920 of viewport */
+.hero-devops-product {
+  position: absolute;
+  top: 50%;
+  left: 95%;
+  z-index: 1;
+  height: calc(460vw / 19.2);
+  width: auto;
+  max-width: none;
+  transform: translate(-95%, -50%);
+  pointer-events: none;
+}
+
+@media (min-width: 1920px) {
+  .hero-devops-product {
+    height: 500px;
+  }
+}
+
+.hero-caption-devops {
+  width: 85%;
+  max-width: 1800px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.hero-devops-logo {
+  display: block;
+  margin-bottom: clamp(12px, 1.2vw, 23px);
+  margin-left: clamp(0px, 0.4vw, 8px);
+}
+
+.hero-devops-logo img {
+  display: block;
+  width: clamp(119px, 11.4vw, 219px);
+  height: auto;
+}
+
+.hero-title-devops {
+  color: #fff !important;
+  font-family: var(--font-raleway), sans-serif;
+  font-size: clamp(1.5rem, 3.2vw, 56px);
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.hero-br-desktop {
+  display: none;
+}
+
+@media (min-width: 960px) {
+  .hero-br-desktop {
+    display: inline;
+  }
+}
+
 @media (max-width: 767px) {
   .hero-carousel {
     height: 420px;
   }
 
   .hero-caption-computex,
-  .hero-caption-d206v {
+  .hero-caption-d206v,
+  .hero-caption-devops {
     width: 92%;
+  }
+
+  .hero-caption-devops {
+    text-align: center;
+  }
+
+  .hero-devops-logo img {
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .hero-o-bg {
