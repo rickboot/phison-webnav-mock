@@ -632,7 +632,6 @@ export const navVersions: NavVersionConfig[] = [
     description: "Web team working draft",
     sections: webTeamWip,
     showHome: true,
-    showProductFinder: true,
   },
   {
     id: "new-nav-1",
