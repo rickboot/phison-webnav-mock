@@ -1346,9 +1346,42 @@ a:hover {
   border-bottom: 1px solid var(--phison-border, #e5e7eb);
 }
 
+.mega-menu-hub a,
+.mega-menu-hub button {
+  color: var(--phison-orange);
+}
+
+.mega-menu-hub a:hover,
+.mega-menu-hub button:hover {
+  color: var(--phison-orange-hover);
+}
+
+.mega-menu-hub button[aria-current="true"] {
+  color: var(--phison-navy);
+}
+
 .mega-menu-hub:only-child {
   padding-bottom: 0;
   border-bottom: none;
+}
+
+/* Content links: navy (global `a` is orange for page chrome) */
+.mega-menu-enter a {
+  color: var(--phison-navy);
+}
+
+.mega-menu-enter a:hover {
+  color: var(--phison-orange);
+}
+
+.mega-menu-pillar-title {
+  color: var(--phison-navy) !important;
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.mega-menu-pillar-title:hover {
+  color: var(--phison-orange) !important;
 }
 
 /* Live phison.com mega-menu — mirrors #g-header .submenu / .flex_div */

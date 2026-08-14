@@ -4,6 +4,7 @@ import { utilityNav } from "./nav";
 export type NavVersionId =
   | "current"
   | "rick-1"
+  | "rick-2"
   | "web-team-wip"
   | "custom";
 
@@ -25,8 +26,17 @@ function leaf(label: string): NavItem {
   return { label, href: "#", description: d };
 }
 
+/** Nested item with optional children (deeper IA levels). */
+function branch(label: string, children: NavItem[]): NavItem {
+  return { label, href: "#", description: d, children };
+}
+
 function group(title: string, labels: string[]): NavGroup {
   return { title, items: labels.map(leaf) };
+}
+
+function groupItems(title: string, items: NavItem[]): NavGroup {
+  return { title, items };
 }
 
 /** Leaf-only entry rendered as a titled link with no children. */
@@ -417,6 +427,123 @@ export const rick1: NavSection[] = [
   supportSection,
 ];
 
+/** Rick 2 — Products / Solutions portfolio IA */
+export const rick2: NavSection[] = [
+  section("products", "Products", {
+    items: [
+      "SSD Controllers",
+      "UFS Controllers",
+      "eMMC Controllers",
+      "Memory Card Controllers",
+      "USB Controllers",
+      "Signal Conditioning",
+      "Featured Products",
+    ].map(leaf),
+  }),
+  section("solutions", "Solutions", {
+    groups: [
+      groupItems("AI Solutions", [
+        branch("Full-Stack Private AI", [
+          leaf("Phison AI Data Platform"),
+        ]),
+        branch("AI Memory Extension", [
+          leaf("Pascari aiDAPTIV"),
+        ]),
+        branch("Data Storage for AI", [
+          leaf("High-Performance AI Storage"),
+          leaf("High-Capacity AI Storage"),
+          leaf("AI Server Boot Storage"),
+          leaf("View All Enterprise SSDs"),
+        ]),
+      ]),
+      group("Enterprise Storage", [
+        "Data Center and Cloud",
+        "High-Performance Storage",
+        "High-Capacity Storage",
+        "Edge Infrastructure",
+      ]),
+      group("Embedded", [
+        "Edge Computing",
+        "Factory Automation",
+        "Medical Devices",
+        "Surveillance",
+        "Aerospace and Defense",
+        "Retail and Digital Signage",
+      ]),
+      group("Automotive", [
+        "ADAS and Autonomous Driving",
+        "In-Vehicle Infotainment and Cockpit",
+        "Connectivity and Telematics",
+      ]),
+      group("Space", [
+        "Spaceborne Storage",
+        "Lunar Data Infrastructure",
+        "Rugged and Radiation-Tolerant Storage",
+      ]),
+      group("Consumer", [
+        "Desktop and Laptop PCs",
+        "Workstations",
+        "Mobile and Portable Devices",
+        "External Storage",
+        "Removable Storage",
+      ]),
+      group("Gaming", [
+        "PC Gaming",
+        "Gaming Consoles",
+        "Gaming and Casino Systems",
+      ]),
+      group("Security", [
+        "Data Protection",
+        "Hardware Encryption",
+        "Secure Data Erasure",
+        "Storage Security Management",
+      ]),
+      group("Custom Design and Engineering", [
+        "Custom Storage Solutions",
+        "NAND Controller ASIC Design",
+        "Firmware Customization",
+        "Testing and Validation",
+        "ODM Integration",
+        "Supply Chain and Manufacturing",
+      ]),
+    ],
+  }),
+  section("resources", "Resources", {
+    groups: [
+      leafGroup("Blog"),
+      group("Newsroom", ["Press Releases", "Phison in the News"]),
+      leafGroup("Events"),
+      leafGroup("Media Kits"),
+      leafGroup("Partner Resources"),
+    ],
+  }),
+  section("company", "Company", {
+    groups: [
+      leafGroup("About Phison"),
+      group("Investors", [
+        "Fundamentals",
+        "Financials",
+        "Annual Reports",
+        "Corporate Governance",
+        "Shareholder Services",
+      ]),
+      leafGroup("ESG"),
+      leafGroup("Careers"),
+      leafGroup("Global Talent"),
+      leafGroup("Contact Us"),
+    ],
+  }),
+  section("support", "Support", {
+    items: [
+      "Product Support",
+      "Downloads",
+      "Technical Documentation",
+      "Sales Inquiries",
+      "Contact Support",
+    ].map(leaf),
+  }),
+];
+
 export const navVersions: NavVersionConfig[] = [
   {
     id: "current",
@@ -438,6 +565,13 @@ export const navVersions: NavVersionConfig[] = [
     description: "Storage + AI Solutions",
     sections: rick1,
     showHome: true,
+  },
+  {
+    id: "rick-2",
+    label: "Rick 2",
+    description: "Products / Solutions portfolio (deep Solutions IA)",
+    sections: rick2,
+    showHome: false,
   },
   {
     id: "custom",

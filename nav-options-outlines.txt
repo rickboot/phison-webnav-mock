@@ -233,3 +233,97 @@ Support
 	Contact Support
 	Partner Support
 	FAQs
+
+############################################################
+# Rick 2
+# id: rick-2
+# Products / Solutions portfolio
+############################################################
+
+Products
+	SSD Controllers
+	UFS Controllers
+	eMMC Controllers
+	Memory Card Controllers
+	USB Controllers
+	Signal Conditioning
+	Featured Products
+Solutions
+	AI Solutions
+		Full-Stack Private AI
+			Phison AI Data Platform
+		AI Memory Extension
+			Pascari aiDAPTIV
+		Data Storage for AI
+			High-Performance AI Storage
+			High-Capacity AI Storage
+			AI Server Boot Storage
+			View All Enterprise SSDs
+	Enterprise Storage
+		Data Center and Cloud
+		High-Performance Storage
+		High-Capacity Storage
+		Edge Infrastructure
+	Embedded
+		Edge Computing
+		Factory Automation
+		Medical Devices
+		Surveillance
+		Aerospace and Defense
+		Retail and Digital Signage
+	Automotive
+		ADAS and Autonomous Driving
+		In-Vehicle Infotainment and Cockpit
+		Connectivity and Telematics
+	Space
+		Spaceborne Storage
+		Lunar Data Infrastructure
+		Rugged and Radiation-Tolerant Storage
+	Consumer
+		Desktop and Laptop PCs
+		Workstations
+		Mobile and Portable Devices
+		External Storage
+		Removable Storage
+	Gaming
+		PC Gaming
+		Gaming Consoles
+		Gaming and Casino Systems
+	Security
+		Data Protection
+		Hardware Encryption
+		Secure Data Erasure
+		Storage Security Management
+	Custom Design and Engineering
+		Custom Storage Solutions
+		NAND Controller ASIC Design
+		Firmware Customization
+		Testing and Validation
+		ODM Integration
+		Supply Chain and Manufacturing
+Resources
+	Blog
+	Newsroom
+		Press Releases
+		Phison in the News
+	Events
+	Media Kits
+	Partner Resources
+Company
+	About Phison
+	Investors
+		Fundamentals
+		Financials
+		Annual Reports
+		Corporate Governance
+		Shareholder Services
+	ESG
+	Careers
+	Global Talent
+	Contact Us
+Support
+	Product Support
+	Downloads
+	Technical Documentation
+	Sales Inquiries
+	Contact Support

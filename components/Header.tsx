@@ -7,7 +7,7 @@ import type { NavVersionId } from "@/data/nav-versions";
 import { useNavVersion } from "./NavVersionProvider";
 import MegaMenu from "./MegaMenu";
 import NavEditorPanel from "./NavEditorPanel";
-import { utilityNav } from "@/data/nav";
+import { utilityNav, type NavItem } from "@/data/nav";
 
 export default function Header() {
   const {
@@ -244,7 +244,11 @@ export default function Header() {
 
         {activeSection && (
           <div onMouseEnter={cancelClose} onMouseLeave={closeMenu}>
-            <MegaMenu section={activeSection} onClose={() => setActiveMenu(null)} />
+            <MegaMenu
+              key={activeSection.id}
+              section={activeSection}
+              onClose={() => setActiveMenu(null)}
+            />
           </div>
         )}
 
@@ -318,13 +322,34 @@ export default function Header() {
                             </Link>
                           )}
                           {section.groups
-                            ? section.groups.flatMap((g) =>
-                                g.items.length === 0
-                                  ? [{ label: g.title, href: "#", description: "" }]
-                                  : g.items
-                              ).map((item) => (
+                            ? section.groups.flatMap((g) => {
+                                const flatten = (items: NavItem[]): NavItem[] =>
+                                  items.flatMap((item) => [
+                                    item,
+                                    ...(item.children
+                                      ? flatten(item.children)
+                                      : []),
+                                  ]);
+                                if (g.items.length === 0) {
+                                  return [
+                                    {
+                                      label: g.title,
+                                      href: "#",
+                                      description: "",
+                                    } satisfies NavItem,
+                                  ];
+                                }
+                                return [
+                                  {
+                                    label: g.title,
+                                    href: "#",
+                                    description: "",
+                                  } satisfies NavItem,
+                                  ...flatten(g.items),
+                                ];
+                              }).map((item) => (
                                 <Link
-                                  key={item.label}
+                                  key={`${section.id}-${item.label}`}
                                   href={item.href}
                                   onClick={(e) => {
                                     if (item.href === "#") e.preventDefault();

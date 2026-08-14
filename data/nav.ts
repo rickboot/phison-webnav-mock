@@ -2,6 +2,8 @@ export type NavItem = {
   label: string;
   href: string;
   description: string;
+  /** Nested submenu under this item (IA outlines deeper than group → leaf). */
+  children?: NavItem[];
 };
 
 export type NavGroup = {
@@ -241,8 +243,14 @@ export function getSectionById(id: string): NavSection | undefined {
 }
 
 export function getAllSectionItems(section: NavSection): NavItem[] {
-  if (section.items) return section.items;
-  if (section.groups) return section.groups.flatMap((g) => g.items);
+  const flatten = (items: NavItem[]): NavItem[] =>
+    items.flatMap((item) => [
+      item,
+      ...(item.children ? flatten(item.children) : []),
+    ]);
+
+  if (section.items) return flatten(section.items);
+  if (section.groups) return flatten(section.groups.flatMap((g) => g.items));
   return [];
 }
 

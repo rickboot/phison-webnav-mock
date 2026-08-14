@@ -9,13 +9,20 @@ export function sectionsToOutline(sections: NavSection[], showHome = false): str
   const lines: string[] = [];
   if (showHome) lines.push("Home");
 
+  const pushItem = (item: NavItem, level: number) => {
+    lines.push(`${pad(level)}${item.label}`);
+    for (const child of item.children || []) {
+      pushItem(child, level + 1);
+    }
+  };
+
   for (const section of sections) {
     lines.push(section.label);
     if (section.linkOnly) continue;
 
     if (section.items?.length) {
       for (const item of section.items) {
-        lines.push(`${pad(1)}${item.label}`);
+        pushItem(item, 1);
       }
       continue;
     }
@@ -24,7 +31,7 @@ export function sectionsToOutline(sections: NavSection[], showHome = false): str
       for (const group of section.groups) {
         lines.push(`${pad(1)}${group.title}`);
         for (const item of group.items) {
-          lines.push(`${pad(2)}${item.label}`);
+          pushItem(item, 2);
         }
       }
     }
@@ -36,7 +43,7 @@ export function sectionsToOutline(sections: NavSection[], showHome = false): str
 /** First-use Custom outline — seeded from Rick 1. */
 export const DEFAULT_CUSTOM_OUTLINE =
   `# Custom nav (seeded from Rick 1 — Storage + AI Solutions)
-# Indent with Tab. Up to 3 levels. Lines starting with # are comments.
+# Indent with Tab. Nested levels supported. Lines starting with # are comments.
 # A top-level "Home" adds a Home link. Edit, then Apply.
 #
 ` + sectionsToOutline(rick1, true);
@@ -75,6 +82,60 @@ function slugify(label: string): string {
 
 function leaf(label: string): NavItem {
   return { label, href: "#", description: "" };
+}
+
+function itemFromNode(node: OutlineNode): NavItem {
+  if (node.children.length === 0) return leaf(node.label);
+  return {
+    label: node.label,
+    href: "#",
+    description: "",
+    children: node.children.map(itemFromNode),
+  };
+}
+
+function sectionFromNode(node: OutlineNode, id: string): NavSection {
+  const { label, children } = node;
+
+  if (children.length === 0) {
+    return {
+      id,
+      label,
+      href: "#",
+      landingDescription: "",
+      linkOnly: true,
+    };
+  }
+
+  const hasGrandchildren = children.some((c) => c.children.length > 0);
+
+  if (!hasGrandchildren) {
+    return {
+      id,
+      label,
+      href: "#",
+      landingDescription: "",
+      items: children.map((c) => leaf(c.label)),
+    };
+  }
+
+  const groups: NavGroup[] = children.map((c) => {
+    if (c.children.length === 0) {
+      return { title: c.label, items: [] };
+    }
+    return {
+      title: c.label,
+      items: c.children.map(itemFromNode),
+    };
+  });
+
+  return {
+    id,
+    label,
+    href: "#",
+    landingDescription: "",
+    groups,
+  };
 }
 
 function uniqueIds(labels: string[]): string[] {
@@ -122,10 +183,10 @@ function buildTree(lines: { line: number; level: number; label: string }[]): {
   const stack: { level: number; node: OutlineNode }[] = [];
 
   for (const row of lines) {
-    if (row.level > 2) {
+    if (row.level > 5) {
       errors.push({
         line: row.line,
-        message: "Maximum depth is 3 (section → group → item)",
+        message: "Maximum depth is 6 levels",
       });
       continue;
     }
@@ -155,50 +216,6 @@ function buildTree(lines: { line: number; level: number; label: string }[]): {
   }
 
   return { roots, errors };
-}
-
-function sectionFromNode(node: OutlineNode, id: string): NavSection {
-  const { label, children } = node;
-
-  if (children.length === 0) {
-    return {
-      id,
-      label,
-      href: "#",
-      landingDescription: "",
-      linkOnly: true,
-    };
-  }
-
-  const hasGrandchildren = children.some((c) => c.children.length > 0);
-
-  if (!hasGrandchildren) {
-    return {
-      id,
-      label,
-      href: "#",
-      landingDescription: "",
-      items: children.map((c) => leaf(c.label)),
-    };
-  }
-
-  const groups: NavGroup[] = children.map((c) => {
-    if (c.children.length === 0) {
-      return { title: c.label, items: [] };
-    }
-    return {
-      title: c.label,
-      items: c.children.map((g) => leaf(g.label)),
-    };
-  });
-
-  return {
-    id,
-    label,
-    href: "#",
-    landingDescription: "",
-    groups,
-  };
 }
 
 export function parseNavOutline(text: string): ParseResult {
