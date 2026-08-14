@@ -5,7 +5,7 @@
 
 ## Goal
 
-Named custom nav outlines persist **live** (server) and appear in everyone’s nav dropdown. Create-only (no overwrite).
+Named custom nav outlines persist **live** (server) and appear in everyone’s nav dropdown. Create-only (no overwrite). Anyone can delete a shared nav.
 
 ## Presets
 
@@ -29,12 +29,14 @@ Removed: Rick 1, Web Team WIP.
 - `GET /api/navs` → `{ navs: [{ id, name, createdAt }] }`
 - `POST /api/navs` → `{ name, outline }` → validate outline → 201 or **409** if name/slug taken
 - `GET /api/navs/[id]` → `{ id, name, outline, createdAt }`
+- `DELETE /api/navs/[id]` → remove shared nav (open; no auth). Built-ins (`current`, `rick`, `custom`) cannot be deleted.
 
 ## UI
 
 - Editor: **Save as…** prompts for name, POSTs, refreshes shared list, selects new nav
+- Dropdown **×** on shared rows deletes for everyone (confirm first)
 - Selecting a shared nav loads outline from API into the active scheme (not local Custom unless editing)
 
 ## Non-goals (v1)
 
-Overwrite, delete, auth, removing `#nav=` share hashes
+Overwrite, auth, removing `#nav=` share hashes

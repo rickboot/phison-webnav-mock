@@ -121,6 +121,57 @@ export type CreateSharedNavResult =
   | { ok: true; nav: SharedNavRecord }
   | { ok: false; status: 409 | 400 | 503; message: string };
 
+export type DeleteSharedNavResult =
+  | { ok: true }
+  | { ok: false; status: 400 | 404 | 503; message: string };
+
+export async function deleteSharedNav(id: string): Promise<DeleteSharedNavResult> {
+  const slug = id.trim();
+  if (!slug) {
+    return { ok: false, status: 400, message: "Missing nav id" };
+  }
+  if (RESERVED_NAV_IDS.has(slug)) {
+    return {
+      ok: false,
+      status: 400,
+      message: "Built-in navs cannot be deleted",
+    };
+  }
+
+  const redis = getRedis();
+  if (redis) {
+    const index = (await redis.get<SharedNavMeta[]>(INDEX_KEY)) || [];
+    const next = index.filter((n) => n.id !== slug);
+    const outline = await redis.get(outlineKey(slug));
+    if (next.length === index.length && outline == null) {
+      return { ok: false, status: 404, message: "Not found" };
+    }
+    await redis.del(outlineKey(slug));
+    await redis.set(INDEX_KEY, next);
+    return { ok: true };
+  }
+
+  if (useFileStore()) {
+    const store = await readFileStore();
+    const hadIndex = store.index.some((n) => n.id === slug);
+    const hadOutline = store.outlines[slug] != null;
+    if (!hadIndex && !hadOutline) {
+      return { ok: false, status: 404, message: "Not found" };
+    }
+    store.index = store.index.filter((n) => n.id !== slug);
+    delete store.outlines[slug];
+    await writeFileStore(store);
+    return { ok: true };
+  }
+
+  return {
+    ok: false,
+    status: 503,
+    message:
+      "Shared nav storage is not configured. Add Upstash Redis (UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN) on Vercel.",
+  };
+}
+
 export async function createSharedNav(
   name: string,
   outline: string,

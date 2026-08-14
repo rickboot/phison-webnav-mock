@@ -2,7 +2,7 @@
 
 ## Summary
 
-Author a custom top-nav hierarchy in the browser. **Apply** previews locally; **Save as…** publishes a named nav to the **shared live library** (Upstash Redis in production) so it appears in everyone’s dropdown. Create-only (no overwrite).
+Author a custom top-nav hierarchy in the browser. **Apply** previews locally; **Save as…** publishes a named nav to the **shared live library** (Upstash Redis in production) so it appears in everyone’s dropdown. Names cannot be overwritten; anyone can **delete**.
 
 ## Behavior
 
@@ -10,6 +10,7 @@ Author a custom top-nav hierarchy in the browser. **Apply** previews locally; **
 - **Edit Custom** opens the outline panel (local draft)
 - **Apply** — parse + `localStorage` Custom preview
 - **Save as…** — `POST /api/navs` with a display name; 409 if name taken
+- **Delete** (× in the dropdown) — `DELETE /api/navs/[id]`; anyone can remove a shared nav
 - **Copy share link** — optional one-off `#nav=` URL hash (still works)
 
 ## Production storage
@@ -25,7 +26,7 @@ Locally without Redis, shared navs persist under `.data/shared-navs.json` (dev o
 
 - `lib/nav-outline.ts` — parse / encode / local storage
 - `lib/shared-navs.ts` — Redis + file store
-- `app/api/navs/` — list / create / get
+- `app/api/navs/` — list / create / get / delete
 - `components/NavEditorPanel.tsx` — editor + Save as…
 - `components/NavVersionProvider.tsx` — schemes + shared load
 - `docs/superpowers/specs/2026-08-13-shared-named-navs-design.md`

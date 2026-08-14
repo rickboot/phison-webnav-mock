@@ -19,6 +19,7 @@ export default function Header() {
     refreshSharedNavs,
     editorOpen,
     setEditorOpen,
+    deleteSharedNav,
   } = useNavVersion();
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -81,6 +82,14 @@ export default function Header() {
     setVersionOpen(false);
     setActiveMenu(null);
     setMobileSection(null);
+  };
+
+  const onDeleteShared = async (id: string, label: string) => {
+    if (!window.confirm(`Delete “${label}” for everyone?`)) return;
+    const result = await deleteSharedNav(id);
+    if (!result.ok) {
+      window.alert(result.message);
+    }
   };
 
   return (
@@ -191,7 +200,12 @@ export default function Header() {
               {versionOpen && (
                 <ul className="nav-version-menu" role="listbox" aria-label="Navigation version">
                   {versions.map((v) => (
-                    <li key={v.id} role="option" aria-selected={v.id === versionId}>
+                    <li
+                      key={v.id}
+                      role="option"
+                      aria-selected={v.id === versionId}
+                      className="nav-version-row"
+                    >
                       <button
                         type="button"
                         className={`nav-version-option ${v.id === versionId ? "is-active" : ""}`}
@@ -200,6 +214,17 @@ export default function Header() {
                         <span className="nav-version-option-label">{v.label}</span>
                         <span className="nav-version-option-desc">{v.description}</span>
                       </button>
+                      {v.shared ? (
+                        <button
+                          type="button"
+                          className="nav-version-delete"
+                          aria-label={`Delete ${v.label}`}
+                          title="Delete for everyone"
+                          onClick={() => void onDeleteShared(v.id, v.label)}
+                        >
+                          ×
+                        </button>
+                      ) : null}
                     </li>
                   ))}
                 </ul>
@@ -267,18 +292,29 @@ export default function Header() {
                 <p className="text-xs font-semibold text-phison-muted uppercase tracking-wide mb-2">Nav version</p>
                 <div className="flex flex-wrap gap-2">
                   {versions.map((v) => (
-                    <button
-                      key={v.id}
-                      type="button"
-                      onClick={() => selectVersion(v.id)}
-                      className={`px-3 py-1.5 text-sm font-semibold rounded border ${
-                        v.id === versionId
-                          ? "border-phison-orange text-phison-navy bg-phison-gray"
-                          : "border-phison-border text-phison-gray-text"
-                      }`}
-                    >
-                      {v.label}
-                    </button>
+                    <span key={v.id} className="inline-flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => selectVersion(v.id)}
+                        className={`px-3 py-1.5 text-sm font-semibold rounded border ${
+                          v.id === versionId
+                            ? "border-phison-orange text-phison-navy bg-phison-gray"
+                            : "border-phison-border text-phison-gray-text"
+                        }`}
+                      >
+                        {v.label}
+                      </button>
+                      {v.shared ? (
+                        <button
+                          type="button"
+                          className="px-1.5 py-1 text-sm text-phison-muted"
+                          aria-label={`Delete ${v.label}`}
+                          onClick={() => void onDeleteShared(v.id, v.label)}
+                        >
+                          ×
+                        </button>
+                      ) : null}
+                    </span>
                   ))}
                 </div>
                 <button

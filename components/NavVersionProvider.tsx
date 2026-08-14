@@ -48,6 +48,9 @@ type NavVersionContextValue = {
     name: string,
     outline: string,
   ) => Promise<{ ok: true; id: string } | { ok: false; message: string }>;
+  deleteSharedNav: (
+    id: string,
+  ) => Promise<{ ok: true } | { ok: false; message: string }>;
   getShareUrl: (text: string) => string;
   sharedConfigured: boolean;
   sharedLoading: boolean;
@@ -178,6 +181,14 @@ function readCachedSharedOutline(id: string): string | null {
 function writeCachedSharedOutline(id: string, outline: string) {
   try {
     localStorage.setItem(SHARED_CACHE_PREFIX + id, outline);
+  } catch {
+    /* ignore */
+  }
+}
+
+function clearCachedSharedOutline(id: string) {
+  try {
+    localStorage.removeItem(SHARED_CACHE_PREFIX + id);
   } catch {
     /* ignore */
   }
@@ -344,6 +355,40 @@ export function NavVersionProvider({ children }: { children: React.ReactNode }) 
     [refreshSharedNavs, setVersionId],
   );
 
+  const deleteSharedNav = useCallback(
+    async (id: string) => {
+      try {
+        const res = await fetch(`/api/navs/${encodeURIComponent(id)}`, {
+          method: "DELETE",
+          cache: "no-store",
+        });
+        const data = (await res.json()) as { message?: string };
+        if (!res.ok) {
+          return {
+            ok: false as const,
+            message: data.message || "Could not delete shared nav",
+          };
+        }
+        clearCachedSharedOutline(id);
+        setSharedMeta((prev) => prev.filter((n) => n.id !== id));
+        setSharedOutlines((prev) => {
+          const next = { ...prev };
+          delete next[id];
+          return next;
+        });
+        if (versionId === id) setVersionId("current");
+        void refreshSharedNavs();
+        return { ok: true as const };
+      } catch {
+        return {
+          ok: false as const,
+          message: "Network error while deleting shared nav",
+        };
+      }
+    },
+    [refreshSharedNavs, setVersionId, versionId],
+  );
+
   const getShareUrl = useCallback((text: string) => {
     if (typeof window === "undefined") return "";
     return buildShareUrl(
@@ -400,6 +445,7 @@ export function NavVersionProvider({ children }: { children: React.ReactNode }) 
       setEditorOpen,
       applyOutline,
       saveSharedNav,
+      deleteSharedNav,
       getShareUrl,
       sharedConfigured,
       sharedLoading,
@@ -415,6 +461,7 @@ export function NavVersionProvider({ children }: { children: React.ReactNode }) 
       editorOpen,
       applyOutline,
       saveSharedNav,
+      deleteSharedNav,
       getShareUrl,
       sharedConfigured,
       sharedLoading,

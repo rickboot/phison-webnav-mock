@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSharedNav } from "@/lib/shared-navs";
+import { deleteSharedNav, getSharedNav } from "@/lib/shared-navs";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,6 +14,21 @@ export async function GET(_request: Request, context: RouteContext) {
   }
   return NextResponse.json(
     { nav },
+    { headers: { "Cache-Control": "no-store, max-age=0" } },
+  );
+}
+
+export async function DELETE(_request: Request, context: RouteContext) {
+  const { id } = await context.params;
+  const result = await deleteSharedNav(id);
+  if (!result.ok) {
+    return NextResponse.json(
+      { message: result.message },
+      { status: result.status },
+    );
+  }
+  return NextResponse.json(
+    { ok: true },
     { headers: { "Cache-Control": "no-store, max-age=0" } },
   );
 }
