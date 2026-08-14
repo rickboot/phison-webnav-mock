@@ -7,7 +7,7 @@ import {
 } from "@/lib/shared-navs";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"; // always hit Redis / file store; never cache the library list
 
 export async function GET() {
   const navs = await listSharedNavs();
