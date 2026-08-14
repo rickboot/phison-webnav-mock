@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { mockProducts } from "@/data/pages";
-import { useNavVersion } from "./NavVersionProvider";
 
 const defaultFilterOptions = {
   productType: ["Enterprise SSD", "Controller", "Boot Drive SSD", "Industrial SSD", "Signal IC"],
@@ -63,8 +62,7 @@ const emptyWipFilters = (): WipFilters =>
   ) as WipFilters;
 
 export default function ProductFinderMock() {
-  const { versionId } = useNavVersion();
-  const isWip = versionId === "web-team-wip";
+  const isWip = false;
 
   const [defaultFilters, setDefaultFilters] = useState<DefaultFilters>(emptyDefaultFilters);
   const [wipFilters, setWipFilters] = useState<WipFilters>(emptyWipFilters);

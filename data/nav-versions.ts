@@ -1,12 +1,7 @@
 import type { NavGroup, NavItem, NavSection } from "./nav";
 import { utilityNav } from "./nav";
 
-export type NavVersionId =
-  | "current"
-  | "rick-1"
-  | "rick-2"
-  | "web-team-wip"
-  | "custom";
+export type NavVersionId = "current" | "rick" | "custom" | string;
 
 export type NavVersionConfig = {
   id: NavVersionId;
@@ -18,6 +13,8 @@ export type NavVersionConfig = {
   showProductFinder?: boolean;
   /** Show Contact Sales in utility nav (not top nav). */
   showContact?: boolean;
+  /** Shared library entry (live Redis). */
+  shared?: boolean;
 };
 
 const d = "";
@@ -553,36 +550,38 @@ export const navVersions: NavVersionConfig[] = [
     showHome: false,
   },
   {
-    id: "web-team-wip",
-    label: "Web Team WIP",
-    description: "Web team working draft",
-    sections: webTeamWip,
-    showHome: true,
-  },
-  {
-    id: "rick-1",
-    label: "Rick 1",
-    description: "Storage + AI Solutions",
-    sections: rick1,
-    showHome: true,
-  },
-  {
-    id: "rick-2",
-    label: "Rick 2",
-    description: "Products / Solutions portfolio (deep Solutions IA)",
+    id: "rick",
+    label: "Rick",
+    description: "Products / Solutions portfolio",
     sections: rick2,
     showHome: false,
   },
   {
     id: "custom",
     label: "Custom",
-    description: "Your outline (edit in panel below)",
+    description: "Local draft (edit, then Save as… to share)",
     sections: [],
     showHome: false,
   },
 ];
 
 export const defaultNavVersionId: NavVersionId = "current";
+
+const BUILTIN_IDS = new Set(navVersions.map((v) => v.id));
+
+/** Map legacy localStorage ids after preset cleanup. */
+export function normalizeNavVersionId(id: string | null): NavVersionId | null {
+  if (!id) return null;
+  if (id === "rick-2" || id === "rick-1") return "rick";
+  if (id === "web-team-wip" || id === "new-nav-1" || id === "new-nav-2") {
+    return "current";
+  }
+  return id;
+}
+
+export function isBuiltinNavVersionId(id: string): boolean {
+  return BUILTIN_IDS.has(id);
+}
 
 export function getNavVersion(id: NavVersionId): NavVersionConfig {
   return navVersions.find((v) => v.id === id) || navVersions[0];

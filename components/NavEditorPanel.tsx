@@ -5,36 +5,66 @@ import { useNavVersion } from "./NavVersionProvider";
 import type { ParseError } from "@/lib/nav-outline";
 
 function NavEditorForm({ initialOutline }: { initialOutline: string }) {
-  const { applyOutline, getShareUrl, setEditorOpen, versionId } = useNavVersion();
+  const {
+    applyOutline,
+    getShareUrl,
+    setEditorOpen,
+    versionId,
+    saveSharedNav,
+    sharedConfigured,
+  } = useNavVersion();
   const [draft, setDraft] = useState(initialOutline);
   const [errors, setErrors] = useState<ParseError[]>([]);
-  const [shareNote, setShareNote] = useState<string | null>(null);
+  const [note, setNote] = useState<string | null>(null);
+  const [saveName, setSaveName] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [showSaveAs, setShowSaveAs] = useState(false);
 
   const onApply = () => {
-    setShareNote(null);
+    setNote(null);
     const result = applyOutline(draft);
     if (!result.ok) {
       setErrors(result.errors);
       return;
     }
     setErrors([]);
+    setNote("Applied as local Custom");
   };
 
   const onCopyShare = async () => {
-    setShareNote(null);
+    setNote(null);
     const result = applyOutline(draft);
     if (!result.ok) {
       setErrors(result.errors);
-      setShareNote("Fix errors before sharing");
+      setNote("Fix errors before sharing");
       return;
     }
     setErrors([]);
     const url = getShareUrl(draft);
     try {
       await navigator.clipboard.writeText(url);
-      setShareNote("Share link copied");
+      setNote("One-off share link copied (URL hash)");
     } catch {
-      setShareNote(url);
+      setNote(url);
+    }
+  };
+
+  const onSaveAs = async () => {
+    setNote(null);
+    setSaving(true);
+    try {
+      const result = await saveSharedNav(saveName, draft);
+      if (!result.ok) {
+        setNote(result.message);
+        return;
+      }
+      setErrors([]);
+      setShowSaveAs(false);
+      setSaveName("");
+      setNote(`Saved “${saveName.trim()}” for everyone`);
+      setEditorOpen(false);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -45,15 +75,32 @@ function NavEditorForm({ initialOutline }: { initialOutline: string }) {
           <div className="nav-editor-title-block">
             <p className="nav-editor-title">Custom nav outline</p>
             <p className="nav-editor-hint">
-              Tab to indent · 3 levels max · # for comments · Apply to preview as Custom
-              {versionId === "custom" ? " · showing Custom" : ""}
+              Tab to indent · Apply = local preview · Save as… = shared library for everyone
+              {versionId === "custom" ? " · editing Custom" : ""}
+              {!sharedConfigured
+                ? " · shared storage not configured (set Upstash env)"
+                : ""}
             </p>
           </div>
           <div className="nav-editor-actions">
             <button type="button" className="nav-editor-btn" onClick={onApply}>
               Apply
             </button>
-            <button type="button" className="nav-editor-btn nav-editor-btn-secondary" onClick={onCopyShare}>
+            <button
+              type="button"
+              className="nav-editor-btn"
+              onClick={() => {
+                setShowSaveAs((v) => !v);
+                setNote(null);
+              }}
+            >
+              Save as…
+            </button>
+            <button
+              type="button"
+              className="nav-editor-btn nav-editor-btn-secondary"
+              onClick={onCopyShare}
+            >
               Copy share link
             </button>
             <button
@@ -65,6 +112,33 @@ function NavEditorForm({ initialOutline }: { initialOutline: string }) {
             </button>
           </div>
         </div>
+
+        {showSaveAs && (
+          <div className="nav-editor-save-as">
+            <label className="nav-editor-save-label" htmlFor="shared-nav-name">
+              Name for shared library (create-only; cannot overwrite)
+            </label>
+            <div className="nav-editor-save-row">
+              <input
+                id="shared-nav-name"
+                className="nav-editor-save-input"
+                value={saveName}
+                onChange={(e) => setSaveName(e.target.value)}
+                placeholder="e.g. Sally AI draft"
+                maxLength={60}
+                disabled={saving}
+              />
+              <button
+                type="button"
+                className="nav-editor-btn"
+                disabled={saving || !saveName.trim()}
+                onClick={() => void onSaveAs()}
+              >
+                {saving ? "Saving…" : "Save to library"}
+              </button>
+            </div>
+          </div>
+        )}
 
         <textarea
           className="nav-editor-textarea"
@@ -96,7 +170,7 @@ function NavEditorForm({ initialOutline }: { initialOutline: string }) {
             ))}
           </ul>
         )}
-        {shareNote && <p className="nav-editor-share-note">{shareNote}</p>}
+        {note && <p className="nav-editor-share-note">{note}</p>}
       </div>
     </div>
   );

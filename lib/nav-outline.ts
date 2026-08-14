@@ -1,5 +1,5 @@
 import type { NavGroup, NavItem, NavSection } from "@/data/nav";
-import { rick1 } from "@/data/nav-versions";
+import { rick2 } from "@/data/nav-versions";
 
 export const CUSTOM_OUTLINE_STORAGE_KEY = "phison-nav-custom-outline";
 export const NAV_SHARE_HASH_PREFIX = "nav=";
@@ -40,13 +40,13 @@ export function sectionsToOutline(sections: NavSection[], showHome = false): str
   return lines.join("\n") + "\n";
 }
 
-/** First-use Custom outline — seeded from Rick 1. */
+/** First-use Custom outline — seeded from Rick. */
 export const DEFAULT_CUSTOM_OUTLINE =
-  `# Custom nav (seeded from Rick 1 — Storage + AI Solutions)
+  `# Custom nav (seeded from Rick — edit, Apply, then Save as… to share with everyone)
 # Indent with Tab. Nested levels supported. Lines starting with # are comments.
-# A top-level "Home" adds a Home link. Edit, then Apply.
+# A top-level "Home" adds a Home link.
 #
-` + sectionsToOutline(rick1, true);
+` + sectionsToOutline(rick2, false);
 
 /** @deprecated use DEFAULT_CUSTOM_OUTLINE */
 export const EMPTY_OUTLINE_STARTER = DEFAULT_CUSTOM_OUTLINE;

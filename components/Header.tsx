@@ -15,6 +15,7 @@ export default function Header() {
     versions,
     versionId,
     setVersionId,
+    selectVersion: selectNavVersion,
     editorOpen,
     setEditorOpen,
   } = useNavVersion();
@@ -75,7 +76,7 @@ export default function Header() {
   const activeSection = topNav.find((s) => s.id === activeMenu);
 
   const selectVersion = (id: NavVersionId) => {
-    setVersionId(id);
+    void selectNavVersion(id);
     setVersionOpen(false);
     setActiveMenu(null);
     setMobileSection(null);

@@ -32,9 +32,13 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
+
+# local shared-nav file store (dev fallback when Redis unset)
+.data/
 
 # typescript
 *.tsbuildinfo
@@ -43,3 +47,4 @@ next-env.d.ts
 # local reference captures (not needed for deploy)
 .screenshots/
 original/
+.figma-preview/
