@@ -16,6 +16,7 @@ export default function Header() {
     versionId,
     setVersionId,
     selectVersion: selectNavVersion,
+    refreshSharedNavs,
     editorOpen,
     setEditorOpen,
   } = useNavVersion();
@@ -174,7 +175,11 @@ export default function Header() {
                 aria-haspopup="listbox"
                 aria-expanded={versionOpen}
                 onClick={() => {
-                  setVersionOpen((o) => !o);
+                  setVersionOpen((o) => {
+                    const next = !o;
+                    if (next) void refreshSharedNavs();
+                    return next;
+                  });
                   setActiveMenu(null);
                 }}
               >

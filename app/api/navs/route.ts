@@ -7,13 +7,21 @@ import {
 } from "@/lib/shared-navs";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const navs = await listSharedNavs();
-  return NextResponse.json({
-    navs,
-    configured: isSharedNavStoreConfigured(),
-  });
+  return NextResponse.json(
+    {
+      navs,
+      configured: isSharedNavStoreConfigured(),
+    },
+    {
+      headers: {
+        "Cache-Control": "no-store, max-age=0",
+      },
+    },
+  );
 }
 
 export async function POST(request: Request) {

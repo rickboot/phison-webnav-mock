@@ -1283,8 +1283,12 @@ a:hover {
 }
 
 .nav-editor-save-as {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
   margin-bottom: 12px;
-  padding: 12px;
+  padding: 12px 14px;
   border-radius: 8px;
   background: var(--nav-editor-bg-deep);
   border: 1px solid var(--nav-editor-border);
@@ -1295,26 +1299,35 @@ a:hover {
   font-size: 12px;
   font-weight: 600;
   color: #c5ccd6;
-  margin-bottom: 8px;
-}
-
-.nav-editor-save-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
 }
 
 .nav-editor-save-input {
-  flex: 1 1 200px;
-  min-width: 0;
+  display: block;
+  width: 100%;
+  max-width: 28rem;
+  height: 40px;
+  margin: 0;
+  padding: 0 12px;
+  box-sizing: border-box;
+  position: static;
+  float: none;
   font-family: var(--font-raleway), sans-serif;
   font-size: 14px;
-  padding: 8px 12px;
+  line-height: 40px;
   border-radius: 6px;
   border: 1px solid #9aa5b4;
   background: #fff;
   color: #1a2332;
+}
+
+.nav-editor-save-input::placeholder {
+  color: #8a94a3;
+}
+
+.nav-editor-save-submit {
+  align-self: flex-start;
+  flex-shrink: 0;
+  position: static;
 }
 
 .nav-editor-textarea {

@@ -118,25 +118,24 @@ function NavEditorForm({ initialOutline }: { initialOutline: string }) {
             <label className="nav-editor-save-label" htmlFor="shared-nav-name">
               Name for shared library (create-only; cannot overwrite)
             </label>
-            <div className="nav-editor-save-row">
-              <input
-                id="shared-nav-name"
-                className="nav-editor-save-input"
-                value={saveName}
-                onChange={(e) => setSaveName(e.target.value)}
-                placeholder="e.g. Sally AI draft"
-                maxLength={60}
-                disabled={saving}
-              />
-              <button
-                type="button"
-                className="nav-editor-btn"
-                disabled={saving || !saveName.trim()}
-                onClick={() => void onSaveAs()}
-              >
-                {saving ? "Saving…" : "Save to library"}
-              </button>
-            </div>
+            <input
+              id="shared-nav-name"
+              className="nav-editor-save-input"
+              value={saveName}
+              onChange={(e) => setSaveName(e.target.value)}
+              placeholder="e.g. Sally AI draft"
+              maxLength={60}
+              disabled={saving}
+              autoComplete="off"
+            />
+            <button
+              type="button"
+              className="nav-editor-btn nav-editor-save-submit"
+              disabled={saving || !saveName.trim()}
+              onClick={() => void onSaveAs()}
+            >
+              {saving ? "Saving…" : "Save to library"}
+            </button>
           </div>
         )}
 

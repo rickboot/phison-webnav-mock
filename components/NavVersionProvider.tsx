@@ -206,10 +206,9 @@ export function NavVersionProvider({ children }: { children: React.ReactNode }) 
 
   const refreshSharedNavs = useCallback(async () => {
     try {
-      const res = await fetch("/api/navs");
+      const res = await fetch(`/api/navs?t=${Date.now()}`, { cache: "no-store" });
       if (!res.ok) {
         setSharedConfigured(false);
-        setSharedMeta([]);
         return;
       }
       const data = (await res.json()) as {
@@ -220,7 +219,6 @@ export function NavVersionProvider({ children }: { children: React.ReactNode }) 
       setSharedMeta(data.navs || []);
     } catch {
       setSharedConfigured(false);
-      setSharedMeta([]);
     } finally {
       setSharedLoading(false);
     }
@@ -245,7 +243,9 @@ export function NavVersionProvider({ children }: { children: React.ReactNode }) 
       setSharedOutlines((prev) => ({ ...prev, [id]: cached }));
     }
     try {
-      const res = await fetch(`/api/navs/${encodeURIComponent(id)}`);
+      const res = await fetch(`/api/navs/${encodeURIComponent(id)}`, {
+        cache: "no-store",
+      });
       if (!res.ok) return;
       const data = (await res.json()) as { nav: { outline: string } };
       writeCachedSharedOutline(id, data.nav.outline);
@@ -319,8 +319,20 @@ export function NavVersionProvider({ children }: { children: React.ReactNode }) 
           ...prev,
           [data.nav!.id]: data.nav!.outline,
         }));
-        await refreshSharedNavs();
+        // Optimistic: show in dropdown immediately (don't wait on list fetch)
+        setSharedMeta((prev) => {
+          if (prev.some((n) => n.id === data.nav!.id)) return prev;
+          return [
+            ...prev,
+            {
+              id: data.nav!.id,
+              name: data.nav!.name,
+              createdAt: data.nav!.createdAt,
+            },
+          ];
+        });
         setVersionId(data.nav.id);
+        void refreshSharedNavs();
         return { ok: true as const, id: data.nav.id };
       } catch {
         return {
