@@ -370,8 +370,46 @@ export function readOutlineFromLocationHash(hash: string): string | null {
   return decodeOutlineFromShare(raw.slice(NAV_SHARE_HASH_PREFIX.length));
 }
 
+export const NAV_QUERY_PARAM = "nav";
+
+export function readNavIdFromSearch(search: string): string | null {
+  const params = new URLSearchParams(
+    search.startsWith("?") ? search.slice(1) : search,
+  );
+  const id = params.get(NAV_QUERY_PARAM)?.trim();
+  return id || null;
+}
+
+/** Full shareable URL for a scheme. Custom drafts can include the outline hash. */
+export function buildSchemeShareUrl(
+  id: string,
+  origin: string,
+  pathname: string,
+  outline?: string,
+): string {
+  const url = new URL(pathname || "/", origin);
+  url.searchParams.set(NAV_QUERY_PARAM, id);
+  if (id === "custom" && outline) {
+    url.hash = `${NAV_SHARE_HASH_PREFIX}${encodeOutlineForShare(outline)}`;
+  } else {
+    url.hash = "";
+  }
+  return url.toString();
+}
+
+export function writeNavIdToLocation(id: string): void {
+  if (typeof window === "undefined") return;
+  const url = new URL(window.location.href);
+  url.searchParams.set(NAV_QUERY_PARAM, id);
+  const next = `${url.pathname}${url.search}${url.hash}`;
+  const cur = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  if (next !== cur) {
+    window.history.replaceState(null, "", next);
+  }
+}
+
 export function buildShareUrl(outline: string, origin: string, pathname: string): string {
-  return `${origin}${pathname}#${NAV_SHARE_HASH_PREFIX}${encodeOutlineForShare(outline)}`;
+  return buildSchemeShareUrl("custom", origin, pathname, outline);
 }
 
 export function readStoredOutline(): string {

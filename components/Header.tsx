@@ -20,11 +20,13 @@ export default function Header() {
     editorOpen,
     setEditorOpen,
     deleteSharedNav,
+    getPageShareUrl,
   } = useNavVersion();
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileSection, setMobileSection] = useState<string | null>(null);
   const [versionOpen, setVersionOpen] = useState(false);
+  const [copiedUrl, setCopiedUrl] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
   const versionRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -82,6 +84,17 @@ export default function Header() {
     setVersionOpen(false);
     setActiveMenu(null);
     setMobileSection(null);
+  };
+
+  const onCopyPageUrl = async () => {
+    const url = getPageShareUrl();
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopiedUrl(true);
+      window.setTimeout(() => setCopiedUrl(false), 2000);
+    } catch {
+      window.prompt("Copy this URL", url);
+    }
   };
 
   const onDeleteShared = async (id: string, label: string) => {
@@ -252,6 +265,20 @@ export default function Header() {
             >
               Edit Custom
             </span>
+            <span
+              role="button"
+              tabIndex={0}
+              className="nav-edit-toggle"
+              onClick={() => void onCopyPageUrl()}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  void onCopyPageUrl();
+                }
+              }}
+            >
+              {copiedUrl ? "Copied URL" : "Copy URL"}
+            </span>
             <button className="search-btn" aria-label="Search" type="button">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -327,6 +354,13 @@ export default function Header() {
                   }}
                 >
                   Edit Custom
+                </button>
+                <button
+                  type="button"
+                  className="mt-3 ml-4 text-sm font-semibold text-phison-navy"
+                  onClick={() => void onCopyPageUrl()}
+                >
+                  {copiedUrl ? "Copied URL" : "Copy URL"}
                 </button>
               </div>
 

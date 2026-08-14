@@ -565,7 +565,7 @@ export const navVersions: NavVersionConfig[] = [
   },
 ];
 
-export const defaultNavVersionId: NavVersionId = "current";
+export const defaultNavVersionId: NavVersionId = "rick";
 
 const BUILTIN_IDS = new Set(navVersions.map((v) => v.id));
 

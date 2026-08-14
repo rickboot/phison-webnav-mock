@@ -19,11 +19,14 @@ import {
   type NavVersionId,
 } from "@/data/nav-versions";
 import {
+  buildSchemeShareUrl,
   buildShareUrl,
   DEFAULT_CUSTOM_OUTLINE,
   parseNavOutline,
+  readNavIdFromSearch,
   readOutlineFromLocationHash,
   readStoredOutline,
+  writeNavIdToLocation,
   writeStoredOutline,
   type ParseResult,
 } from "@/lib/nav-outline";
@@ -52,6 +55,7 @@ type NavVersionContextValue = {
     id: string,
   ) => Promise<{ ok: true } | { ok: false; message: string }>;
   getShareUrl: (text: string) => string;
+  getPageShareUrl: () => string;
   sharedConfigured: boolean;
   sharedLoading: boolean;
   refreshSharedNavs: () => Promise<void>;
@@ -83,13 +87,15 @@ function consumeShareHashOnce(): void {
 function readStoredVersion(): NavVersionId {
   consumeShareHashOnce();
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    const normalized = normalizeNavVersionId(raw);
-    if (normalized) {
-      if (raw !== normalized) localStorage.setItem(STORAGE_KEY, normalized);
-      return normalized;
+    const fromUrl = readNavIdFromSearch(window.location.search);
+    const urlId = normalizeNavVersionId(fromUrl);
+    if (urlId) {
+      localStorage.setItem(STORAGE_KEY, urlId);
+      return urlId;
     }
-    if (raw) localStorage.removeItem(STORAGE_KEY);
+    if (readOutlineFromLocationHash(window.location.hash)) {
+      return "custom";
+    }
   } catch {
     /* ignore */
   }
@@ -245,6 +251,7 @@ export function NavVersionProvider({ children }: { children: React.ReactNode }) 
     } catch {
       /* ignore */
     }
+    writeNavIdToLocation(id);
     window.dispatchEvent(new Event(VERSION_EVENT));
   }, []);
 
@@ -376,7 +383,7 @@ export function NavVersionProvider({ children }: { children: React.ReactNode }) 
           delete next[id];
           return next;
         });
-        if (versionId === id) setVersionId("current");
+        if (versionId === id) setVersionId(defaultNavVersionId);
         void refreshSharedNavs();
         return { ok: true as const };
       } catch {
@@ -397,6 +404,20 @@ export function NavVersionProvider({ children }: { children: React.ReactNode }) 
       window.location.pathname,
     );
   }, []);
+
+  const getPageShareUrl = useCallback(() => {
+    if (typeof window === "undefined") return "";
+    return buildSchemeShareUrl(
+      versionId,
+      window.location.origin,
+      window.location.pathname,
+      versionId === "custom" ? outline : undefined,
+    );
+  }, [versionId, outline]);
+
+  useEffect(() => {
+    writeNavIdToLocation(versionId);
+  }, [versionId]);
 
   const customConfig = useMemo(() => buildCustomConfig(outline), [outline]);
 
@@ -447,6 +468,7 @@ export function NavVersionProvider({ children }: { children: React.ReactNode }) 
       saveSharedNav,
       deleteSharedNav,
       getShareUrl,
+      getPageShareUrl,
       sharedConfigured,
       sharedLoading,
       refreshSharedNavs,
@@ -463,6 +485,7 @@ export function NavVersionProvider({ children }: { children: React.ReactNode }) 
       saveSharedNav,
       deleteSharedNav,
       getShareUrl,
+      getPageShareUrl,
       sharedConfigured,
       sharedLoading,
       refreshSharedNavs,

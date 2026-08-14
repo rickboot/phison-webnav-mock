@@ -43,7 +43,7 @@ function NavEditorForm({ initialOutline }: { initialOutline: string }) {
     const url = getShareUrl(draft);
     try {
       await navigator.clipboard.writeText(url);
-      setNote("One-off share link copied (URL hash)");
+      setNote("Share URL copied");
     } catch {
       setNote(url);
     }
